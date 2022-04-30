@@ -1,4 +1,3 @@
-
-IssueTracker/client/node_modules
-IssueTracker/server/node_modules
-IssueTracker/.vs/
+client/node_modules/
+server/node_modules/
+.vs/
