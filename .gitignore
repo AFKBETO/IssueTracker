@@ -1,5 +1,4 @@
 
-IssueTracker/IssueTracker/wwwroot/lib/
-IssueTracker/IssueTracker/bin/
+IssueTracker/client/node_modules
+IssueTracker/server/node_modules
 IssueTracker/.vs/
-IssueTracker/IssueTracker/obj/
