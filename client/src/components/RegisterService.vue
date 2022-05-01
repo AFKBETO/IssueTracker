@@ -17,9 +17,9 @@
                 placeholder="Reenter your password"
                 name="repeat-password"
                 v-model="repeatPassword" /><br>
-            <button id="register" :disabled="repeatPasswordError" type="submit">REGISTER</button>
+            <button class="btn btn-primary active" :disabled="repeatPasswordError" type="submit">REGISTER</button>
         </form>
-        <div class="error" v-html="error" />
+        <div class="text-danger" v-html="error" />
     </div>
 </template>
 
@@ -57,13 +57,17 @@ export default {
                         email: this.registerDetails.email,
                         password: this.registerDetails.password
                     })
-                    this.email = ''
-                    this.password = ''
+                    this.registerDetails.email = ''
+                    this.registerDetails.password = ''
+                    this.repeatPassword = ''
+                    this.repeatPasswordError = true
                     console.log(response.data)
                 }
             
             catch (err) {
                 this.error = err.response.data.error
+                this.registerDetails.password = ''
+                this.repeatPassword = ''
                 setTimeout(() => {
                     this.error = null
                 }, 5000)
@@ -72,9 +76,3 @@ export default {
     },
 }
 </script>
-
-<style scoped>
-.error {
-    color: red;
-}
-</style>
