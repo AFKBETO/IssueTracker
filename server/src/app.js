@@ -12,12 +12,6 @@ app.use(morgan('dev'))
 app.use(bodyParser.json())
 app.use(cors())
 
-app.post('/register', (req, res) => {
-  res.status(200).send({
-      message: `Hello, your email is ${req.body.email} and your password is ${req.body.password}!`
-  })
-})
-
 app.use('/api/', apiRouter)
 
 sequelize.sync()
