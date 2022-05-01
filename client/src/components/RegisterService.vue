@@ -1,6 +1,6 @@
 <template>
     <div class="container-sm p-5 my-5">
-        <div class="h1 text-white bg-primary p-2 my-0">Register</div>
+        <div class="h1 text-white bg-dark p-2 my-0">Register</div>
         <form @submit.prevent="register" class="d-flex align-items-center justify-content-center flex-column border pb-3">
             <div class="form-floating w-50 my-3">
                 <input
@@ -32,7 +32,7 @@
                     required>
                 <label for="repeat-password">Repeat password</label>
             </div>
-            <button class="btn btn-primary active w-auto" :disabled="repeatPasswordError" type="submit">REGISTER</button>
+            <button class="btn btn-dark active w-auto" :disabled="repeatPasswordError" type="submit">REGISTER</button>
             <div class="text-danger" v-html="error" />
         </form>
         
