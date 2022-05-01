@@ -1,4 +1,13 @@
 const {User} = require('../database/models')
+const jwt = require('jsonwebtoken')
+const config = require('../database/config/config')
+
+function jwtSignUser(user){
+    const ONE_HOUR = 60*60
+    return jwt.sign(user, config.authentication.jwtSecret, {
+        expiresIn: ONE_HOUR
+    })
+}
 
 module.exports = {
     async register (req, res) {
@@ -20,13 +29,16 @@ module.exports = {
                     email: email
                 }
             })
-            if (!user || password != user.password) {
+            if (!user || !user.comparePassword(password)) {
                 return res.status(403).send({
                     error: "Email and/or password incorrect"
                 })
             }
             
-            res.status(200).send(user.toJSON())
+            res.status(200).send({
+                user: user.toJSON(),
+                token: jwtSignUser(user.toJSON())
+            })
             
         }
         catch (err) {
