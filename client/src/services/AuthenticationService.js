@@ -26,6 +26,8 @@ export function clearAuthToken() {
 }
 export function isLoggedIn() {
     const authToken = getAuthToken()
+    if (authToken) localStorage.setItem(`displayName`, decode(authToken).name)
+    else localStorage.removeItem(`displayName`)
     return !(!authToken) && !isTokenExpired(authToken)
 }
 export function getUserInfo() {

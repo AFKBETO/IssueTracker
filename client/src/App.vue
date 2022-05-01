@@ -12,6 +12,9 @@
           <li class="nav-item" v-show="!isLoggedIn()">
             <router-link class="nav-link text-light" :class="activeClass('register')" to="/register">Register</router-link>
           </li>
+          <li class="nav-item mt-2" v-show="isLoggedIn()">
+            <p class="text-light">Hello, {{ getName() }}!</p>
+          </li>
           <li class="nav-item" v-show="isLoggedIn()">
             <button class="nav-link text-light" type="button" @click="logout">Logout</button>
           </li>
@@ -42,7 +45,13 @@ export default {
     },
     isLoggedIn(){
       return isLoggedIn()
+    },
+    getName(){
+      return localStorage.displayName
     }
+  },
+  computed: {
+    
   }
 }
 </script>

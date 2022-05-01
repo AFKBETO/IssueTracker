@@ -4,6 +4,16 @@
         <form @submit.prevent="register" class="d-flex align-items-center justify-content-center flex-column border pb-3">
             <div class="form-floating w-50 my-3">
                 <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Enter display name"
+                    name="name"
+                    v-model="registerDetails.name"
+                    required>
+                <label for="name">Name</label>
+            </div>
+            <div class="form-floating w-50 my-3">
+                <input
                     type="email"
                     class="form-control"
                     placeholder="Enter email"
@@ -45,6 +55,7 @@ export default {
     data() {
         return {
             registerDetails: {
+                name: '',
                 email: '',
                 password: ''
             },
@@ -69,10 +80,8 @@ export default {
     methods: {
         async register () {
             try {
-                    const response = await register({
-                        email: this.registerDetails.email,
-                        password: this.registerDetails.password
-                    })
+                    const response = await register(this.registerDetails)
+                    this.registerDetails.name = ''
                     this.registerDetails.email = ''
                     this.registerDetails.password = ''
                     this.repeatPassword = ''
