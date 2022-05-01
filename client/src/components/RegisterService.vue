@@ -1,22 +1,37 @@
 <template>
     <div>
         <h1>Register</h1>
-        <form @submit.prevent="register">
-            <input 
-                type="email" 
-                placeholder="Enter your email" 
-                name="email"
-                v-model="registerDetails.email" required /><br>
-            <input 
-                type="password"
-                placeholder="Enter your password"
-                name="password"
-                v-model="registerDetails.password" required /><br>
-            <input 
-                type="password"
-                placeholder="Reenter your password"
-                name="repeat-password"
-                v-model="repeatPassword" /><br>
+        <form @submit.prevent="register" class="d-flex align-items-center justify-content-center flex-column">
+            <div class="form-floating w-50 mb-3 mt-3">
+                <input
+                    type="email"
+                    class="form-control"
+                    placeholder="Enter email"
+                    name="email"
+                    v-model="registerDetails.email"
+                    required>
+                <label for="email">Email</label>
+            </div>
+            <div class="form-floating w-50 mb-3 mt-3">
+                <input
+                    type="password"
+                    class="form-control"
+                    placeholder="Enter password"
+                    name="password"
+                    v-model="registerDetails.password"
+                    required>
+                <label for="password">Password</label>
+            </div>
+            <div class="form-floating w-50 mb-3 mt-3">
+                <input
+                    type="password"
+                    class="form-control"
+                    placeholder="Repeat password"
+                    name="repeat-password"
+                    v-model="repeatPassword"
+                    required>
+                <label for="repeat-password">Repeat password</label>
+            </div>
             <button class="btn btn-primary active" :disabled="repeatPasswordError" type="submit">REGISTER</button>
         </form>
         <div class="text-danger" v-html="error" />
