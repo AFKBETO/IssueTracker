@@ -12,7 +12,12 @@ function jwtSignUser(user){
 module.exports = {
     async register (req, res) {
         try {
-            const user = await User.create(req.body)
+            const user = await User.create({
+                name: req.body.name,
+                email: req.body.email,
+                password: req.body.password,
+                role: 4
+            })
             res.status(200).send(user.toJSON())
         }
         catch (err) {

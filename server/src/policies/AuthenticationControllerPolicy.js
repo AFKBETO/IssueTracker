@@ -7,8 +7,7 @@ module.exports = {
             email: Joi.string().email(),
             password: Joi.string().pattern(
                 new RegExp('(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])((?=.*\\W)|(?=.*_))^[^ ]+$')
-            ),
-            role: Joi.number().integer().min(1).max(4)
+            )
         })
 
         const {error, value} = schema.validate(req.body)
