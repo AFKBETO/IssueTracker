@@ -19,6 +19,7 @@
                 v-model="repeatPassword" /><br>
             <button id="register" :disabled="repeatPasswordError" type="submit">REGISTER</button>
         </form>
+        <div class="error" v-html="error" />
     </div>
 </template>
 
@@ -32,14 +33,15 @@ export default {
                 password: ''
             },
             repeatPassword: '',
-            repeatPasswordError: true
+            repeatPasswordError: true,
+            error: null
             
         }
     },
     watch: {
         repeatPassword: {
             handler(){
-                if (!this.registerDetails.password && this.repeatPassword != this.registerDetails.password) {
+                if (!this.registerDetails.password || this.repeatPassword != this.registerDetails.password) {
                     this.repeatPasswordError = true
                 }
                 else {
@@ -50,14 +52,29 @@ export default {
     },
     methods: {
         async register () {
-            const response = await AuthenticationService.register({
-                email: this.registerDetails.email,
-                password: this.registerDetails.password
-            })
-            this.email = ''
-            this.password = ''
-            console.log(response.data)
-        }
+            try {
+                    const response = await AuthenticationService.register({
+                        email: this.registerDetails.email,
+                        password: this.registerDetails.password
+                    })
+                    this.email = ''
+                    this.password = ''
+                    console.log(response.data)
+                }
+            
+            catch (err) {
+                this.error = err.response.data.error
+                setTimeout(() => {
+                    this.error = null
+                }, 5000)
+            }
+        }    
     },
 }
 </script>
+
+<style scoped>
+.error {
+    color: red;
+}
+</style>
