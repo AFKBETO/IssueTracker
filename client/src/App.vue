@@ -2,38 +2,33 @@
   <div>
     <nav class="navbar navbar-expand-sm bg-dark nav-tabs">
       <div class="container-fluid">
-        <router-link class="navbar-brand text-light" :to="getHomePage">
+        <router-link class="navbar-brand text-light" to="/">
           IssueTracker
         </router-link>
         <ul class="navbar-nav">
-          <li class="nav-item">
-            <router-link v-if="!isLoggedIn" class="nav-link text-light" :class="activeClass('login')" to="/login">Login</router-link>
+          <li class="nav-item" v-show="!isLoggedIn()">
+            <router-link class="nav-link text-light" :class="activeClass('login')" to="/login">Login</router-link>
           </li>
-          <li class="nav-item">
-            <router-link v-if="!isLoggedIn" class="nav-link text-light" :class="activeClass('register')" to="/register">Register</router-link>
+          <li class="nav-item" v-show="!isLoggedIn()">
+            <router-link class="nav-link text-light" :class="activeClass('register')" to="/register">Register</router-link>
           </li>
-          <li class="nav-item">
-            <button v-if="isLoggedIn" class="nav-link text-light" type="button" @click.prevent="changeLogin">Logout</button>
+          <li class="nav-item" v-show="isLoggedIn()">
+            <button class="nav-link text-light" type="button" @click="logout">Logout</button>
           </li>
         </ul>
       </div>
     </nav> 
-    
     <div class="tab-content">
         <router-view
-          class="tab-pane active"
-          @login="changeLogin" />
+          class="tab-pane active" />
     </div>
   </div>
 </template>
 
 <script>
-module.exports = {
-  data(){
-    return {
-      isLoggedIn: false,
-    }
-  },
+import { logout, isLoggedIn } from './services/AuthenticationService.js'
+
+export default {
   methods: {
       activeClass: function (...names) {
         for (let name of names) {
@@ -41,13 +36,12 @@ module.exports = {
                 return 'active text-dark';
       }
     },
-    changeLogin(){
-      this.isLoggedIn = !this.isLoggedIn
+    logout(){
+      logout()
+      this.$router.push('/login')
     },
-  },
-  computed: {
-    getHomePage(){
-      return this.isLoggedIn? '/': '/login'
+    isLoggedIn(){
+      return isLoggedIn()
     }
   }
 }

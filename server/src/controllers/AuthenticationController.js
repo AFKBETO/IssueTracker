@@ -36,7 +36,6 @@ module.exports = {
             }
             
             res.status(200).send({
-                user: user.toJSON(),
                 token: jwtSignUser(user.toJSON())
             })
             
