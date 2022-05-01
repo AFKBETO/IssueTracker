@@ -24,6 +24,9 @@ module.exports = (sequelize, DataTypes) => {
             autoIncrement: true,
             primaryKey: true
         },
+        name: {
+            type: DataTypes.STRING
+        },
         email: {
             type: DataTypes.STRING,
             unique: true
