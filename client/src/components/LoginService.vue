@@ -39,7 +39,6 @@ export default {
                 password: ''
             },
             error: null
-            
         }
     },
     methods: {
@@ -52,6 +51,7 @@ export default {
                     this.loginDetails.email = ''
                     this.loginDetails.password = ''
                     console.log(response.data)
+                    this.$emit('login')
                 }
             catch (err) {
                 this.error = err.response.data.error
