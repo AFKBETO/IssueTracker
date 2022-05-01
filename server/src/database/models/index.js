@@ -22,6 +22,17 @@ fs
     })
 
 
+db['Project'].hasMany(db['postit'],{
+    onDelete: 'CASCADE'
+})
+db['postit'].belongsTo(db['Project'])
+db['User'].hasMany(db['postit'], {
+    onDelete: 'CASCADE'
+})
+db['postit'].belongsTo(db['User'])
+db['Project'].belongsToMany(db['User'], { through: db['Participation'] })
+db['User'].belongsToMany(db['Project'], { through: db['Participation'] })
+
 db.sequelize = sequelize
 db.Sequelize = Sequelize
 
