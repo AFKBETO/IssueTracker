@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import AuthenticationService from '@/services/AuthenticationService'
+import { register } from '@/services/AuthenticationService.js'
 export default {
     data() {
         return {
@@ -69,7 +69,7 @@ export default {
     methods: {
         async register () {
             try {
-                    const response = await AuthenticationService.register({
+                    const response = await register({
                         email: this.registerDetails.email,
                         password: this.registerDetails.password
                     })

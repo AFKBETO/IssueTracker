@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import AuthenticationService from '@/services/AuthenticationService'
+import { login, setAuthToken } from '@/services/AuthenticationService.js'
 export default {
     data() {
         return {
@@ -44,15 +44,17 @@ export default {
     methods: {
         async login () {
             try {
-                    const response = await AuthenticationService.login({
-                        email: this.loginDetails.email,
-                        password: this.loginDetails.password
-                    })
-                    this.loginDetails.email = ''
-                    this.loginDetails.password = ''
-                    console.log(response.data)
-                    this.$emit('login')
-                }
+                const response = await login({
+                    email: this.loginDetails.email,
+                    password: this.loginDetails.password
+                })
+                this.loginDetails.email = ''
+                this.loginDetails.password = ''
+                setAuthToken(response.data.token)
+                console.log(response.data)
+                this.$emit('login')
+                this.$router.push('/')
+            }
             catch (err) {
                 this.error = err.response.data.error
                 this.loginDetails.password = ''
