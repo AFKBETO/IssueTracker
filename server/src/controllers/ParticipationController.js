@@ -6,17 +6,21 @@ module.exports = {
     async create (req, res) {
         try {
             const decoded = jwtVerifyUser(req, 2)
-            const option = {
-                id: req.body.id,
-                manageByUser: (decoded.role == 2)? decoded.id : req.body.manageByUser
-            }
+            // search for user
             const user = await User.findOne({
-                id: option.manageByUser
+                id: req.body.UserId
             })
             if (!user) {
                 const e = new Error("User not found")
                 e.name = "UserNotFound"
                 throw e
+            }
+            //search for project
+            const option = {
+                id: req.body.ProjectId,
+                // case admin: can assign people to other managers' projects
+                // case managers: only assign people to their own projects
+                manageByUser: (decoded.role == 2)? decoded.id : req.body.manageByUser
             }
             const project = await Project.findOne(option)
             if (!project) {
@@ -24,10 +28,17 @@ module.exports = {
                 e.name = "ProjectNotFound"
                 throw e
             }
-            const participant = Participation.create({
-                UserId: user.id,
-                ProjectId: project.id
-            })
+            try {
+                const participant = await Participation.create({
+                    UserId: user.id,
+                    ProjectId: project.id
+                })
+            }
+            catch (err) {
+                const e = new Error("Participant already assigned in the project.")
+                e.name = "ParticipantAlreadyAssigned"
+                throw e
+            }
             res.status(200).send({
                 message: "Participant successfully assigned."
             })
