@@ -5,6 +5,9 @@ module.exports = (sequelize, DataTypes) => {
             autoIncrement: true,
             primaryKey: true
         },
+        name: {
+            type: DataTypes.STRING,
+        },
         manageByUser: {
             type: DataTypes.INTEGER,
             references: {
