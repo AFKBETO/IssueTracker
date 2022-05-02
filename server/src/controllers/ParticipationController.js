@@ -6,7 +6,7 @@ module.exports = {
     /* 
     Assign new participant to a project
     Minimum permission: 2 (Project Manager)
-    input: {
+    body: {
         ProjectID: Project id,
         UserID: User id,
         manageByUser: optional
