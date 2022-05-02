@@ -43,17 +43,31 @@ module.exports = {
                 id = user.id
             }
             // create project
-            const project = await Project.create({
-                name: req.body.name,
-                manageByUser: id,
-                description: req.body.description,
-                createdBy: decoded.id
+            const [project] = await Project.findOrCreate({
+                where:{
+                    name: req.body.name,
+                    manageByUser: id,
+                    description: req.body.description,
+                    createdBy: decoded.id
+                },
+                paranoid: false,
+                defaults: {
+                    deletedAt: null
+                }
             })
+            project.restore()
             // create associated participation
-            const participation = await Participation.create({
-                UserId: project.manageByUser,
-                ProjectId: project.id
+            const [participation] = await Participation.findOrCreate({
+                where:{
+                    UserId: project.manageByUser,
+                    ProjectId: project.id
+                },
+                paranoid: false,
+                defaults: {
+                    deletedAt: null
+                }
             })
+            participation.restore()
             res.status(201).send(project)
         }
         catch (err) {
@@ -112,7 +126,7 @@ module.exports = {
         2: Update any managed project (Project Manager)
     }
     params: {
-        id: ProjectId (required)
+        projectId: ProjectId (required)
     }
     body: {
         name: Project name (optional, not null)
@@ -174,12 +188,17 @@ module.exports = {
             }
             // check if new associated participation exists, and create if not
             if (data.manageByUser){
-                const [participation, created] = await Participation.findOrCreate({
+                const [participation] = await Participation.findOrCreate({
                     where: {
                         UserId : data.manageByUser,
                         ProjectId: parseInt(req.params.projectId)
+                    },
+                    paranoid: false,
+                    defaults: {
+                        deletedAt: null
                     }
                 })
+                participation.restore()
             }
             
             res.status(200).send({
@@ -198,7 +217,7 @@ module.exports = {
     Delete a project
     Permission: 1 (Administrator)
     params: {
-        id: ProjectId (required)
+        projectId: projectId (required)
     }
     */
     async delete (req, res) {
@@ -206,7 +225,7 @@ module.exports = {
             const decoded = jwtVerifyUser(req, 1)
             await Project.destroy({
                 where: {
-                    id: req.params.id
+                    id: req.params.projectId
                 }
             })
             res.status(204).send({
