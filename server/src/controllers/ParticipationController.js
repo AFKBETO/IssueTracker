@@ -14,53 +14,67 @@ module.exports = {
     async create (req, res) {
         try {
             const decoded = jwtVerifyUser(req, 2)
-            // search for user
-            const user = await User.findOne({
-                where: {
-                    id: req.body.UserId
-                }
-            })
-            if (!user) {
-                const e = new Error("User not found")
-                e.name = "UserNotFound"
-                throw e
-            }
-            //search for project
-            const project = await Project.findOne({
-                where: {
-                    id: req.body.ProjectId,
-                }
-            })
-            if (!project) {
-                const e = new Error("Project not found")
-                e.name = "ProjectNotFound"
-                throw e
-            }
             // check if user has authorization
-            if (decoded.role == 2 && decoded.id != project.manageByUser) {
+            if (decoded.role == 2 && decoded.id != req.body.ProjectId) {
                 const e = new Error("You are not authorized to assign people to this project.")
                 e.name = "UnauthorizedAction"
                 throw e
             }
-            try {
-                const participant = await Participation.create({
-                    UserId: user.id,
-                    ProjectId: project.id
-                })
-            }
-            catch (err) {
-                const e = new Error("Participant already assigned in the project.")
-                e.name = "ParticipantAlreadyAssigned"
-                throw e
-            }
+            const participant = await Participation.create({
+                UserId: req.body.UserId,
+                ProjectId: req.body.ProjectId
+            })
             res.status(201).send(participant)
+            
         }
         catch (err) {
+            console.log(err.name)
             const error = errorHandler(err)
             res.status(error.status).send({
                 error: `Unable to assign participant: ${error.message}`
             })
         }
-        return
+    },
+    /* 
+    Read all projects that a specific user participate
+    Permission: {
+        1: Read all projects participated by any user (Administrator)
+            To read all projects, refer to ProjectController
+        Others: Read all participated projects (Manager, Dev & Submittor)
+    }
+    params: {
+        userId: User id (required)
+    }
+    */
+    async read (req, res) {
+        try {
+            const decoded = jwtVerifyUser(req, 4)
+            if (decoded.role > 1 && decoded.id != req.params.userId) {
+                const e = new Error("You are not authorized for this action.")
+                e.name = "UnauthorizedAction"
+                throw e            
+            }
+            const user = await User.findByPk(parseInt(req.params.userId),{
+                include: {
+                    model: Project,
+                    through: {
+                        model: Participation
+                    }
+                }
+            })
+            if (!user) {
+                const e = new Error("User not found")
+                e.name = "UserNotFound"
+                throw e                     
+            }
+            res.status(200).send(user.Projects)
+            
+        }
+        catch (err) {
+            const error = errorHandler(err)
+            res.status(error.status).send({
+                error: error.message
+            })
+        }
     }
 }
