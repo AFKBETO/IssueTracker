@@ -27,6 +27,8 @@ module.exports = (sequelize, DataTypes) => {
         description: {
             type: DataTypes.TEXT,
         }
+    }, {
+        paranoid: true,
     })
 
     return Project

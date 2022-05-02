@@ -27,6 +27,8 @@ module.exports = (sequelize, DataTypes) => {
         active: {
             type: DataTypes.BOOLEAN
         }
+    }, {
+        paranoid: true,
     })
 
     return postit

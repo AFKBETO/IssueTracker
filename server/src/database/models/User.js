@@ -49,6 +49,8 @@ module.exports = (sequelize, DataTypes) => {
             beforeUpdate: hashPassword,
             beforeSave: hashPassword
         }
+    }, {
+        paranoid: true,
     })
     
     User.prototype.comparePassword = function (password) {

@@ -8,6 +8,8 @@ module.exports = (sequelize, DataTypes) => {
         description: {
             type: DataTypes.STRING,
         }
+    }, {
+        paranoid: true,
     })
 
     Role.findOrCreate({
