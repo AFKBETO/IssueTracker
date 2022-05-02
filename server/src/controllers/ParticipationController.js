@@ -25,10 +25,7 @@ module.exports = {
                     UserId: req.body.userId,
                     ProjectId: req.body.projectId
                 },
-                paranoid: false,
-                defaults: {
-                    deletedAt: null
-                }
+                paranoid: false
             })
             participant.restore()
             res.status(201).send(participant)

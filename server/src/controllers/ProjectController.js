@@ -50,10 +50,7 @@ module.exports = {
                     description: req.body.description,
                     createdBy: decoded.id
                 },
-                paranoid: false,
-                defaults: {
-                    deletedAt: null
-                }
+                paranoid: false
             })
             project.restore()
             // create associated participation
@@ -62,10 +59,7 @@ module.exports = {
                     UserId: project.manageByUser,
                     ProjectId: project.id
                 },
-                paranoid: false,
-                defaults: {
-                    deletedAt: null
-                }
+                paranoid: false
             })
             participation.restore()
             res.status(201).send(project)
@@ -193,10 +187,7 @@ module.exports = {
                         UserId : data.manageByUser,
                         ProjectId: parseInt(req.params.projectId)
                     },
-                    paranoid: false,
-                    defaults: {
-                        deletedAt: null
-                    }
+                    paranoid: false
                 })
                 participation.restore()
             }
