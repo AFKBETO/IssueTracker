@@ -7,9 +7,18 @@ module.exports = (sequelize, DataTypes) => {
         },
         name: {
             type: DataTypes.STRING,
+            allowNull: false,
         },
         manageByUser: {
             type: DataTypes.INTEGER,
+            references: {
+                model: 'Users',
+                key: 'id'
+            }
+        },
+        createdBy: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
             references: {
                 model: 'Users',
                 key: 'id'
