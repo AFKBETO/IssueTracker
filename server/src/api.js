@@ -10,6 +10,7 @@ router.post('/login', AuthenticationController.login)
 
 router.post('/project/create', ProjectController.create)
 router.post('/project/read', ProjectController.read)
+router.patch('/project/update/:projectId', ProjectController.update)
 
 router.post('/participation/create', PartipationController.create)
 
