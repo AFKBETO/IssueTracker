@@ -16,6 +16,7 @@ router.delete('/project/:projectId', ProjectController.delete)
 
 router.post('/participation', PartipationController.create)
 router.get('/participation/:userId', PartipationController.read)
+router.delete('/participation', PartipationController.delete)
 
 router.get('/token', (req, res) => {
     console.log(req)
