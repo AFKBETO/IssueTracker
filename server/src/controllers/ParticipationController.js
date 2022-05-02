@@ -5,11 +5,10 @@ const { errorHandler } = require('./ErrorHandler')
 module.exports = {
     /* 
     Assign new participant to a project
-    Minimum permission: 2 (Project Manager)
+    Permission: 2 (Project Manager)
     body: {
-        ProjectID: Project id,
-        UserID: User id,
-        manageByUser: optional
+        ProjectID: Project id (required),
+        UserID: User id (required)
     }
     */
     async create (req, res) {
@@ -27,21 +26,20 @@ module.exports = {
                 throw e
             }
             //search for project
-            const option = {
-                id: req.body.ProjectId,
-            }
-            // case admin: can assign people to other managers' projects
-            // case managers: only assign people to their own projects
-            if (decoded.role == 2){
-                option.manageByUser = decoded.id
-            }
-            else if (decoded.role == 1 && req.body.manageByUser) {
-                option.manageByUser = req.body.manageByUser
-            }
-            const project = await Project.findOne({where: option})
+            const project = await Project.findOne({
+                where: {
+                    id: req.body.ProjectId,
+                }
+            })
             if (!project) {
                 const e = new Error("Project not found")
                 e.name = "ProjectNotFound"
+                throw e
+            }
+            // check if user has authorization
+            if (decoded.role == 2 && decoded.id != project.manageByUser) {
+                const e = new Error("You are not authorized to assign people to this project.")
+                e.name = "UnauthorizedAction"
                 throw e
             }
             try {
@@ -55,9 +53,7 @@ module.exports = {
                 e.name = "ParticipantAlreadyAssigned"
                 throw e
             }
-            res.status(200).send({
-                message: "Participant successfully assigned."
-            })
+            res.status(201).send(participant)
         }
         catch (err) {
             const error = errorHandler(err)
