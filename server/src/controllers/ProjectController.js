@@ -6,7 +6,7 @@ const { Op } = require('sequelize')
 module.exports = {
     /* 
     Read projects
-    Minimum permission: {
+    Permission: {
         1: Create a project and assign it to a manager (Administrator)
         2: Create a project (Project Manager)
     }
@@ -66,7 +66,7 @@ module.exports = {
     },
     /* 
     Read projects
-    Minimum permission: {
+    Permission: {
         1: Read any project (Administrator)
         2: Read any managed project (Project Manager)
     }
@@ -128,7 +128,7 @@ module.exports = {
     },
     /* 
     Update a project
-    Minimum permission: {
+    Permission: {
         1: Update any project (Administrator)
         2: Update any managed project (Project Manager)
     }
@@ -222,7 +222,7 @@ module.exports = {
     },
     /* 
     Delete a project
-    Minimum permission: 1 (Administrator)
+    Permission: 1 (Administrator)
     params: {
         id: ProjectId (required)
     }
