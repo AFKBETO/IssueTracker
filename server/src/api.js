@@ -9,6 +9,7 @@ router.post('/register', AuthenticationControllerPolicy.register, Authentication
 router.post('/login', AuthenticationController.login)
 
 router.post('/project/create', ProjectController.create)
+router.post('/project/read', ProjectController.read)
 
 router.post('/participation/create', PartipationController.create)
 
