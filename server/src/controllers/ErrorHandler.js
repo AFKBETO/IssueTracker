@@ -13,6 +13,7 @@ export function errorHandler(err) {
             error.status = 403
             break
         case "UserNotFound":
+        case "ProjectNotFound":
             error.status = 404
             break
         default:

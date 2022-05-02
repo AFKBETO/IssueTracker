@@ -1,4 +1,4 @@
-const { Product: Project } = require('../database/models')
+const { Project } = require('../database/models')
 const { jwtVerifyUser } = require('./VerifyController')
 const { errorHandler } = require('./ErrorHandler')
 
