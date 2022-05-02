@@ -65,48 +65,27 @@ module.exports = {
         return
     },
     /* 
-    Read projects
+    Read all projects
     Permission: {
-        1: Read any project (Administrator)
-        2: Read any managed project (Project Manager)
+        1: Read all projects (Administrator)
+        2: Read all managed projects (Project Manager)
     }
-    body: {
-        ProjectId: ProjectId (optional)
-        userId[]: array (optional, ignored if role#2)
-        before: Date (optional, in ms),
-        after: Date (optional, in ms),
+    params: {
+        userId: User ID (omitted if sent by admin)
     }
-    If input is empty, read all projects that current user is authorized to read
     */
     async read (req, res) {
         try {
             const decoded = jwtVerifyUser(req, 2)
-            const option = {}          
+            const option = {}
             // parse options
-            if (req.body || decoded.role == 2) {
-                if (req.body.ProjectId){
-                    option.id = req.body.ProjectId
-                }
-                // admin can read any project
-                if (decoded.role == 1 && req.body.userId) {
-                    option.manageByUser = req.body.userId
-                }
-                // parse condition to fetch all projects of current user
-                // if current manager is a manager
-                if (decoded.role == 2){
-                    option.manageByUser = decoded.id
-                }
-                // parse date and time
-                if (req.body.before) {
-                    option.createdAt = {
-                        [Op.lte] : new Date(req.body.before)
-                    }
-                }
-                if (req.body.after) {
-                    option.createdAt = {
-                        [Op.gte] : new Date(req.body.after)
-                    }
-                }
+            if (req.params.userId > 0) {
+                option.manageByUser = req.params.userId
+            }
+            if (decoded.role == 2 && Object.keys(option).length) {
+                const e = new Error("You are not authorized for this action.")
+                e.name = "UnauthorizedAction"
+                throw e
             }
             const projects = await Project.findAll({
                 where: option
@@ -149,14 +128,13 @@ module.exports = {
         try { 
             const decoded = jwtVerifyUser(req, 2)
             const data = {}
+            const options = {
+                id: parseInt(req.params.projectId)
+            }
             // allow manager modification if user is admin
             if (decoded.role == 1) {
                 if (req.body.manageByUser){
-                    const user = await User.findOne({
-                        where: {
-                            id: req.body.manageByUser
-                        }
-                    })
+                    const user = await User.findByPk(req.body.manageByUser)
                     if (!user) {
                         const e = new Error("User not found")
                         e.name = "UserNotFound"
@@ -168,6 +146,12 @@ module.exports = {
                     data.manageByUser = user.id
                 }
             }
+            // lock user id in options if user is manager
+            if (decoded.role == 2){
+                options.manageByUser = decoded.id
+            }
+
+
             // parse other data to modify
             if (req.body.name) {
                 data.name = req.body.name 
@@ -180,37 +164,27 @@ module.exports = {
                 const e = new Error("No parameter set")
                 throw e
             }
-            // find if project exists
-            let project = await Project.findOne({
-                where: {
-                    id: parseInt(req.params.projectId)
-                }
+            const result = await Project.update(data, {
+                where: options
             })
-            if (!project){
-                const e = new Error("Project not found.")
+            if (result[0] == 0){
+                const e = new Error("Project not found or not managed by user.")
                 e.name = "ProjectNotFound"
                 throw e
             }
-            // check if the current user is manager
-            // and trying to modify non-owned project
-            if (decoded.role == 2 && project.manageByUser != decoded.id) {
-                const e = new Error("You are not authorized for this action.")
-                e.name = "UnauthorizedAction"
-                throw e
-            }
-            project.set(data)
-            await project.save()
             // check if new associated participation exists, and create if not
             if (data.manageByUser){
                 const [participation, created] = await Participation.findOrCreate({
                     where: {
-                        UserId : project.manageByUser,
-                        ProjectId: project.id
+                        UserId : data.manageByUser,
+                        ProjectId: parseInt(req.params.projectId)
                     }
                 })
             }
-        
-            res.status(201).send(project)
+            
+            res.status(200).send({
+                message: "Project updated successfully."
+            })
 
         }
         catch (err) {
