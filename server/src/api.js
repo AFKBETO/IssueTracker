@@ -9,8 +9,9 @@ router.post('/register', AuthenticationControllerPolicy.register, Authentication
 router.post('/login', AuthenticationController.login)
 
 router.post('/project/create', ProjectController.create)
-router.post('/project/read', ProjectController.read)
-router.patch('/project/update/:projectId', ProjectController.update)
+router.post('/project', ProjectController.read)
+router.patch('/project/:projectId', ProjectController.update)
+router.delete('/project/:projectId', ProjectController.delete)
 
 router.post('/participation/create', PartipationController.create)
 

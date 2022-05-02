@@ -54,9 +54,7 @@ module.exports = {
                 UserId: project.manageByUser,
                 ProjectId: project.id
             })
-            res.status(200).send({
-                message: "Project successfully created."
-            })
+            res.status(201).send(project)
         }
         catch (err) {
             const error = errorHandler(err)
@@ -146,7 +144,7 @@ module.exports = {
         },
         description: Project description (optional, required for role#2)
     }
-     */
+    */
     async update(req, res) {
         try { 
             const decoded = jwtVerifyUser(req, 2)
@@ -212,13 +210,38 @@ module.exports = {
                 })
             }
         
-            res.status(200).send(project)
+            res.status(201).send(project)
 
         }
         catch (err) {
             const error = errorHandler(err)
             res.status(error.status).send({
                 error: `Unable to update project: ${error.message}`
+            })
+        }
+    },
+    /* 
+    Delete a project
+    Minimum permission: 1 (Administrator)
+    params: {
+        id: ProjectId (required)
+    }
+    */
+    async delete (req, res) {
+        try {
+            const decoded = jwtVerifyUser(req, 1)
+            await Project.destroy({
+                where: {
+                    id: req.params.id
+                }
+            })
+            res.status(204).send({
+                message: "The project is successfully deleted."
+            })
+        }
+        catch (err) {
+            res.status(500).send({
+                error: `Failure to delete project: ${err.message}`
             })
         }
     }
