@@ -9,6 +9,9 @@ module.exports = {
             message: err.message
         }
         switch (err.name) {
+            case "SequelizeUniqueConstraintError":
+                error.message = "Duplicated creation."
+                break    
             case "TokenExpiredError":
                 error.status = 401
                 error.message = "Your session has expired."
@@ -18,6 +21,8 @@ module.exports = {
             case "WrongLogin":
                 error.status = 403
                 break
+            case "SequelizeForeignKeyConstraintError":
+                error.message = "At least one parameter is invalid."
             case "UserNotFound":
             case "ProjectNotFound":
                 error.status = 404
