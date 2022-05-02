@@ -1,6 +1,7 @@
 const { User } = require('../database/models')
 const jwt = require('jsonwebtoken')
 const config = require('../database/config/config')
+const { errorHandler } = require('./ErrorHandler')
 
 function jwtSignUser(user){
     const ONE_HOUR = 60*60
@@ -21,8 +22,9 @@ module.exports = {
             res.status(200).send(user.toJSON())
         }
         catch (err) {
-            res.status(400).send({
-                error: `This email is already in use.`
+            const error = errorHandler(new Error(`This email is already in use.`))
+            res.status(error.status).send({
+                error: error.message
             })
         }
     },
@@ -35,9 +37,9 @@ module.exports = {
                 }
             })
             if (!user || !user.comparePassword(password)) {
-                return res.status(403).send({
-                    error: "Email and/or password incorrect"
-                })
+                const e = new Error("Email and/or password incorrect.")
+                e.name = "WrongLogin"
+                throw e
             }
             
             res.status(200).send({
@@ -46,8 +48,10 @@ module.exports = {
             
         }
         catch (err) {
-            res.status(500).send({
-                error: `Invalid login information.`
+            const error = errorHandler(err)
+            console.log(err)
+            res.status(error.status).send({
+                error: `Invalid login information: ${error.message}`
             })
         }
     }
