@@ -22,10 +22,7 @@ module.exports = {
             res.status(200).send(user.toJSON())
         }
         catch (err) {
-            const error = errorHandler(new Error(`This email is already in use.`))
-            res.status(error.status).send({
-                error: error.message
-            })
+            errorHandler(res, new Error(`This email is already in use.`), "Error")
         }
     },
     async login (req, res) {
@@ -48,11 +45,7 @@ module.exports = {
             
         }
         catch (err) {
-            const error = errorHandler(err)
-            console.log(err)
-            res.status(error.status).send({
-                error: `Invalid login information: ${error.message}`
-            })
+            errorHandler(res, err, "Invalid login information")
         }
     }
 }

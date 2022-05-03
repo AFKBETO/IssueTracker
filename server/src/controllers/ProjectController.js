@@ -65,10 +65,7 @@ module.exports = {
             res.status(201).send(project)
         }
         catch (err) {
-            const error = errorHandler(err)
-            res.status(error.status).send({
-                error: `Unable to create project: ${error.message}`
-            })
+            errorHandler(res, err, "Unable to create project")
         }
         return
     },
@@ -107,10 +104,7 @@ module.exports = {
 
         }
         catch (err) {
-            const error = errorHandler(err)
-            res.status(error.status).send({
-                error: `Unable to read projects: ${error.message}`
-            })
+            errorHandler(res, err, "Unable to read project")
         }
     },
     /* 
@@ -198,10 +192,7 @@ module.exports = {
 
         }
         catch (err) {
-            const error = errorHandler(err)
-            res.status(error.status).send({
-                error: `Unable to update project: ${error.message}`
-            })
+            errorHandler(res, err, "Unable to update project")
         }
     },
     /* 

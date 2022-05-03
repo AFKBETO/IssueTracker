@@ -3,7 +3,7 @@ this function embeds error status into the error message
 */
 
 module.exports = {
-    errorHandler(err) {
+    errorHandler(res, err, message) {
         const error = {
             status: 400,
             message: err.message
@@ -35,6 +35,8 @@ module.exports = {
             default:
                 break
         }
-        return error
+        res.status(error.status).send({
+            error: `${message}: ${error.message}`
+        })
     }
 }

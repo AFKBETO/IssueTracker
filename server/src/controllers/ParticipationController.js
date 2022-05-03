@@ -32,11 +32,7 @@ module.exports = {
             
         }
         catch (err) {
-            console.log(err.name)
-            const error = errorHandler(err)
-            res.status(error.status).send({
-                error: `Unable to assign participant: ${error.message}`
-            })
+            errorHandler(res, err, "Unable to assign participant")
         }
     },
     /* 
@@ -75,10 +71,7 @@ module.exports = {
             
         }
         catch (err) {
-            const error = errorHandler(err)
-            res.status(error.status).send({
-                error: error.message
-            })
+            errorHandler(res, err, "Error")
         }
     },
     /* 
