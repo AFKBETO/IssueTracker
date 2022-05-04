@@ -43,18 +43,17 @@ module.exports = {
                 id = user.id
             }
             // create project
-            const [project] = await Project.create({
+            const project = await Project.create({
                 name: req.body.name,
                 manageByUser: id,
                 description: req.body.description,
                 createdBy: decoded.id
             })
             // create associated participation
-            const [participation] = await Participation.create({
+            const participation = await Participation.create({
                 UserId: project.manageByUser,
                 ProjectId: project.id
             })
-            participation.restore()
             res.status(201).send(project)
         }
         catch (err) {
