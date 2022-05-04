@@ -158,14 +158,16 @@ module.exports = {
                 const e = new Error("No parameter set")
                 throw e
             }
-            const result = await Project.update(data, {
+            const project = await Project.findOne({
                 where: options
             })
-            if (result[0] == 0){
+            if (!project){
                 const e = new Error("Project not found or not managed by user.")
                 e.name = "ProjectNotFound"
                 throw e
             }
+            project.set(data)
+            await project.save()
             // check if new associated participation exists, and create if not
             if (data.manageByUser){
                 const [participation] = await Participation.findOrCreate({
@@ -178,9 +180,7 @@ module.exports = {
                 participation.restore()
             }
             
-            res.status(200).send({
-                message: "Project updated successfully."
-            })
+            res.status(200).send(project)
 
         }
         catch (err) {
