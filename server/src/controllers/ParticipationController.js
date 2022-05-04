@@ -85,7 +85,7 @@ module.exports = {
         projectId: ProjectId
     }
     */
-    async delete (req, res) {
+    async remove (req, res) {
         try {
             const decoded = jwtVerifyUser(req, 2)
             // search if project is valid

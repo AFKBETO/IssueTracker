@@ -194,7 +194,7 @@ module.exports = {
         projectId: projectId (required)
     }
     */
-    async delete (req, res) {
+    async remove (req, res) {
         try {
             const decoded = jwtVerifyUser(req, 1)
             await Project.destroy({
@@ -203,13 +203,11 @@ module.exports = {
                 }
             })
             res.status(204).send({
-                message: "The project is successfully deleted."
+                message: "The project is successfully removed."
             })
         }
         catch (err) {
-            res.status(500).send({
-                error: `Failure to delete project: ${err.message}`
-            })
+            errorHandler(res, err, "Failure to remove project")
         }
     }
 }
