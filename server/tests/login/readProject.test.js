@@ -1,7 +1,6 @@
-const { expect, assert } = require('chai')
-const { User, Project } = require('../../src/database/models')
+const { assert } = require('chai')
 const { login } = require('../../src/controllers/AuthenticationController.js')
-const ProjectController = require('../../src/controllers/ProjectController.js')
+const { read } = require('../../src/controllers/ProjectController.js')
 const jwt = require('jsonwebtoken')
 const Response = require('../response')
 const config = require('../../src/database/config/config')
@@ -32,7 +31,7 @@ describe("Administrator user", async function() {
             }
             const res = new Response()
 
-            await ProjectController.create(req, res)
+            await read(req, res)
             assert.equal(res.data.status, 201, `Status code should be 201, but got ${res.data.status}: ${res.data.error}`)
             const project = res.data.dataValues
             assert.equal(project.name, req.body.name, `Project name should be ${req.body.name}, but got ${project.name}`)
@@ -46,7 +45,7 @@ describe("Administrator user", async function() {
                 description: "A project managed by manager"
             }
             const res = new Response()
-            await ProjectController.create(req, res)
+            await read(req, res)
             assert.equal(res.data.status, 201, `Status code should be 201, but got ${res.data.status}: ${res.data.error}`)
             const project = res.data.dataValues
             assert.equal(project.name, req.body.name, `Project name should be ${req.body.name}, but got ${project.name}`)
@@ -60,10 +59,8 @@ describe("Administrator user", async function() {
                 description: "A project managed by a dev"
             }
             const res = new Response()
-            await ProjectController.create(req, res)
+            await read(req, res)
             assert.equal(res.data.status, 400, `Status code should be 400, but got ${res.data.status}: ${res.data.error || res.data.dataValues}`)
         })
     })
-    
-
 })
