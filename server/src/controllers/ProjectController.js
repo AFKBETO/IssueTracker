@@ -76,7 +76,7 @@ module.exports = {
         2: Read all managed projects (Project Manager)
     }
     params: {
-        userId: User ID (omitted if sent by admin)
+        userId: User ID (can be omitted if sent by admin)
     }
     */
     async read (req, res) {
