@@ -25,6 +25,7 @@ module.exports = {
                 error.message = "At least one parameter is invalid."
             case "UserNotFound":
             case "ProjectNotFound":
+            case "TicketNotFound":
                 error.status = 404
                 break
             case "ParticipantAlreadyAssigned":
