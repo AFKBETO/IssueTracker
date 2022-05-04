@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const postit = sequelize.define('postit', {
+    const Ticket = sequelize.define('Ticket', {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
@@ -21,15 +21,20 @@ module.exports = (sequelize, DataTypes) => {
                 onUpdate: 'CASCADE'
             }
         },
+        name: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         description: {
             type: DataTypes.TEXT,
         },
         active: {
-            type: DataTypes.BOOLEAN
+            type: DataTypes.BOOLEAN,
+            defaultValue: true
         }
     }, {
         paranoid: true,
     })
 
-    return postit
+    return Ticket
 }
