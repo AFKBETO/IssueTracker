@@ -1,5 +1,5 @@
 const { assert } = require('chai')
-const { create } = require('../../src/controllers/ProjectController.js')
+const { create, read } = require('../../src/controllers/ProjectController.js')
 const { Response, Request } = require('../ReqRes')
 const user = require('../devinit/user.init')
 const runLogin = require('../Login')
@@ -8,20 +8,17 @@ describe("Administrator user", async function() {
     const req = new Request()
     it("Login as admin", async function() {
         req.body = {
-            email: user.admin.email,
-            password: user.admin.password
+            email: user.dev.email,
+            password: user.dev.password
         }
-        runLogin(req, user.admin.name)
+        runLogin(req, user.dev.name)
     })
     describe("Admin working on project", async function () {
-        req.body = {
-            name: "ProjectAdmin",
-            description: "A project managed by admin"
-        }
-        it("Create a new project for self", async function() {
-            runCreate(req, 0, 201)
+        req.body = {}
+        it("Read all projects hey", async function() {
+            runRead(req, 1, 400)
         })
-        req.body = {
+        /* req.body = {
             name: "ProjectManager",
             description: "A project managed by manager"
         }
@@ -41,11 +38,11 @@ describe("Administrator user", async function() {
         }
         it("Create a new project for a non-user, should fail with 404", async function() {
             runCreate(req, 69420, 404)
-        })
+        }) */
     })
 })
 
-describe("Project Manager user", async function() {
+/* describe("Project Manager user", async function() {
     const req = new Request()
     it("Login as manager", async function() {
         req.body = {
@@ -108,5 +105,16 @@ async function runCreateExtra(request, target, statusCode, manageByUser) {
 
 async function runCreate(request, target, statusCode) {
     runCreateExtra(request, target, statusCode, target)
-}
+} */
 
+async function runRead(request, userid, statusCode) {
+    assert.equal(statusCode, 201, "Fail")
+    if (userid) {
+        request.params["userId"] = userid
+    }
+    const res = new Response()
+    await read(request, res)
+    assert.equal(res.data.status, statusCode, `Status code should be ${statusCode}, but got ${res.data.status}: ${res.data.error}`)
+    const projects = res.data.dataValues
+    assert.isBoolean(projects, `Should be an array, but got ${projects.constructor.name}`)
+}

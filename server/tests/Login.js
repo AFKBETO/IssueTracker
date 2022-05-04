@@ -1,3 +1,4 @@
+const { assert } = require('chai')
 const { Response } = require('./ReqRes')
 const config = require('../src/database/config/config')
 const jwt = require('jsonwebtoken')

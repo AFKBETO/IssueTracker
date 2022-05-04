@@ -9,7 +9,7 @@ describe("Login test", async function() {
             email: user.admin.email,
             password: user.admin.password
         }
-        runLogin(req, user.admin.name)
+        await runLogin(req, user.admin.name)
     })
     it("Login as manager", async function() {
         const req = new Request()
@@ -17,7 +17,7 @@ describe("Login test", async function() {
             email: user.manager.email,
             password: user.manager.password
         }
-        runLogin(req, user.manager.name)
+        await runLogin(req, user.manager.name)
     })
     it("Login as developer", async function() {
         const req = new Request()
@@ -25,7 +25,7 @@ describe("Login test", async function() {
             email: user.dev.email,
             password: user.dev.password
         }
-        runLogin(req, user.dev.name)
+        await runLogin(req, user.dev.name)
     })
     it("Login as submittor", async function() {
         const req = new Request()
@@ -33,6 +33,6 @@ describe("Login test", async function() {
             email: user.submittor.email,
             password: user.submittor.password
         }
-        runLogin(req, user.submittor.name)
+        await runLogin(req, user.submittor.name)
     })
 })
