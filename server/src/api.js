@@ -12,11 +12,11 @@ router.post('/project', ProjectController.create)
 router.get('/project', ProjectController.read)
 router.get('/project/:userId', ProjectController.read)
 router.patch('/project/:projectId', ProjectController.update)
-router.delete('/project/:projectId', ProjectController.delete)
+router.delete('/project/:projectId', ProjectController.remove)
 
 router.post('/participation', PartipationController.create)
 router.get('/participation/:userId', PartipationController.read)
-router.delete('/participation', PartipationController.delete)
+router.delete('/participation', PartipationController.remove)
 
 router.get('/token', (req, res) => {
     console.log(req)
