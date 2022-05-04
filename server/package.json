@@ -5,8 +5,11 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon --watch src --exec npm run server",
+    "dev": "npm run devinit && npm run start",
+    "devinit": "node ./tests/devinit/user.init.js",
     "server": "node ./src/app.js",
-    "lint": "eslint **/*.js"
+    "lint": "eslint **/*.js",
+    "test": "mocha ./tests/*/*.test.js"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +29,8 @@
     "sequelize": "^6.19.0"
   },
   "devDependencies": {
-    "eslint": "^8.14.0"
+    "chai": "^4.3.6",
+    "eslint": "^8.14.0",
+    "mocha": "^10.0.0"
   }
 }
