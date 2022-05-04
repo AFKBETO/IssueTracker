@@ -15,7 +15,13 @@ module.exports = {
         try {
             const decoded = jwtVerifyUser(req, 2)
             // check if user has authorization
-            if (decoded.role == 2 && decoded.id != req.body.projectId) {
+            const project = await Project.findByPk(req.body.projectId)
+            if (!project) {
+                const e = new Error("Project not found.")
+                e.name = "ProjectNotFound"
+                throw e
+            }
+            if (decoded.role == 2 && decoded.id != project.manageByUser) {
                 const e = new Error("You are not authorized to assign people to this project.")
                 e.name = "UnauthorizedAction"
                 throw e
@@ -115,7 +121,7 @@ module.exports = {
             })
         }
         catch (err) {
-            res.status(500).send({
+            errorHandler(res, err, "Failure to remove user from project")
                 error: `Failure to remove user from project: ${err.message}`
             })
         }
