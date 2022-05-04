@@ -9,8 +9,9 @@
     "devinit": "node ./tests/devinit/user.init.js",
     "server": "node ./src/app.js",
     "lint": "eslint **/*.js",
-    "testcreateproject": "mocha ./tests/login/createProject.test.js",
-    "testreadproject": "mocha ./tests/login/readProject.test.js"
+    "testlogin": "mocha ./tests/login/login.test.js",
+    "testcreateproject": "mocha ./tests/project/createProject.test.js",
+    "testreadproject": "mocha ./tests/project/readProject.test.js"
   },
   "keywords": [],
   "author": "",

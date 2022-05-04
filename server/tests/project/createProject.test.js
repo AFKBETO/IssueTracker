@@ -1,10 +1,8 @@
 const { assert } = require('chai')
-const { login } = require('../../src/controllers/AuthenticationController.js')
 const { create } = require('../../src/controllers/ProjectController.js')
-const jwt = require('jsonwebtoken')
 const { Response, Request } = require('../ReqRes')
-const config = require('../../src/database/config/config')
 const user = require('../devinit/user.init')
+const runLogin = require('../Login')
 
 describe("Administrator user", async function() {
     const req = new Request()
@@ -110,14 +108,5 @@ async function runCreateExtra(request, target, statusCode, manageByUser) {
 
 async function runCreate(request, target, statusCode) {
     runCreateExtra(request, target, statusCode, target)
-}
-
-async function runLogin(request, username) {
-    const res = new Response()
-    await login(request, res)
-    assert.equal(res.data.status, 200, `Status code should be 200, but got ${res.data.status}: ${res.data.error}`)
-    const decoded = jwt.verify(res.data.token, config.authentication.jwtSecret)
-    assert.equal(decoded.name, username,`I should be logging in as ${username}, but got ${decoded.name}`)
-    request.headers["authorization"] = `Bearer ${res.data.token}`
 }
 
