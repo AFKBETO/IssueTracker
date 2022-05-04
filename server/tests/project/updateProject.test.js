@@ -1,5 +1,5 @@
 const { assert } = require('chai')
-const { read, update } = require('../../src/controllers/ProjectController.js')
+const { update } = require('../../src/controllers/ProjectController.js')
 const { Response, Request } = require('../ReqRes')
 const user = require('../devinit/user.init')
 const runLogin = require('../Login')
