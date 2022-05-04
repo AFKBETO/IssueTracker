@@ -95,7 +95,7 @@ async function runCreateExtra(request, target, statusCode, manageByUser) {
     const res = new Response()
 
     await create(request, res)
-    assert.equal(res.data.status, statusCode, `Status code should be ${statusCode}, but got ${res.data.status}: ${res.data.error} ${JSON.stringify(request)}`)
+    assert.equal(res.data.status, statusCode, `Status code should be ${statusCode}, but got ${res.data.status}: ${res.data.error}`)
     const project = res.data.dataValues
     if (statusCode == 201) {
         assert.equal(project.name, request.body.name, `Project name should be ${request.body.name}, but got ${project.name}`)

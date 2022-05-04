@@ -13,7 +13,7 @@ module.exports = {
         },
         this.send = (data) => {
             const keys = Object.keys(data)
-            for (var key of keys) {
+            for (let key of keys) {
                 this.data[key] = data[key]
             }
         }
