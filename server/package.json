@@ -11,7 +11,8 @@
     "lint": "eslint **/*.js",
     "testlogin": "mocha ./tests/login/login.test.js",
     "testcreateproject": "mocha ./tests/project/createProject.test.js",
-    "testreadproject": "mocha ./tests/project/readProject.test.js"
+    "testreadproject": "mocha ./tests/project/readProject.test.js",
+    "testupdateproject": "mocha ./tests/project/updateProject.test.js"
   },
   "keywords": [],
   "author": "",

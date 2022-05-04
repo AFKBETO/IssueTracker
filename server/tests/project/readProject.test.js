@@ -1,5 +1,5 @@
 const { assert } = require('chai')
-const { create, read } = require('../../src/controllers/ProjectController.js')
+const { read } = require('../../src/controllers/ProjectController.js')
 const { Response, Request } = require('../ReqRes')
 const user = require('../devinit/user.init')
 const runLogin = require('../Login')
@@ -87,5 +87,4 @@ async function runRead(request, userid, statusCode) {
             assert.equal(res.data[key].manageByUser, userid, `Should not read projects of other users`)
         }
     }
-
 }
