@@ -43,23 +43,16 @@ module.exports = {
                 id = user.id
             }
             // create project
-            const [project] = await Project.findOrCreate({
-                where:{
-                    name: req.body.name,
-                    manageByUser: id,
-                    description: req.body.description,
-                    createdBy: decoded.id
-                },
-                paranoid: false
+            const [project] = await Project.create({
+                name: req.body.name,
+                manageByUser: id,
+                description: req.body.description,
+                createdBy: decoded.id
             })
-            project.restore()
             // create associated participation
-            const [participation] = await Participation.findOrCreate({
-                where:{
-                    UserId: project.manageByUser,
-                    ProjectId: project.id
-                },
-                paranoid: false
+            const [participation] = await Participation.create({
+                UserId: project.manageByUser,
+                ProjectId: project.id
             })
             participation.restore()
             res.status(201).send(project)
