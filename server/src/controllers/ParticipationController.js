@@ -5,10 +5,13 @@ const { errorHandler } = require('./ErrorHandler')
 module.exports = {
     /* 
     Assign new participant to a project
-    Permission: 2 (Project Manager)
+    Permission: {
+        1: Assign any user to a project (Administrator)
+        2: Assign any user to one of their managed projects (Project Manager)
+    }
     body: {
-        projectID: Project id (required),
-        userID: User id (required)
+        projectId: Project id (required),
+        userId: User id (required)
     }
     */
     async create (req, res) {
@@ -122,8 +125,6 @@ module.exports = {
         }
         catch (err) {
             errorHandler(res, err, "Failure to remove user from project")
-                error: `Failure to remove user from project: ${err.message}`
-            })
         }
     }
 }
