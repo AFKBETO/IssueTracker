@@ -6,25 +6,25 @@ const ProjectController = require('./controllers/ProjectController')
 const PartipationController = require('./controllers/ParticipationController')
 const TicketController = require('./controllers/TicketController')
 
-router.post('/register', AuthenticationControllerPolicy.register, AuthenticationController.register)
-router.post('/login', AuthenticationController.login)
+router
+    .post('/register', AuthenticationControllerPolicy.register, AuthenticationController.register)
+    .post('/login', AuthenticationController.login)
 
-router.post('/project', ProjectController.create)
-router.get('/project', ProjectController.read)
-router.get('/project/:userId', ProjectController.readAll)
-router.patch('/project/:projectId', ProjectController.update)
-router.delete('/project/:projectId', ProjectController.remove)
+router
+    .post('/project', ProjectController.create)
+    .get('/project', ProjectController.read)
+    .get('/project/:userId', ProjectController.readAll)
+    .patch('/project/:projectId', ProjectController.update)
+    .delete('/project/:projectId', ProjectController.remove)
 
-router.post('/participation', PartipationController.create)
-router.get('/participation/:userId', PartipationController.read)
-router.delete('/participation', PartipationController.remove)
+router
+    .post('/participation', PartipationController.create)
+    .get('/participation/:userId', PartipationController.read)
+    .delete('/participation', PartipationController.remove)
 
-router.post('/ticket', TicketController.create)
-router.get('/ticket/project/:idProject', TicketController.readProject)
-router.get('/ticket/user/:idUser', TicketController.readUser)
-
-router.get('/token', (req, res) => {
-    console.log(req)
-})
+router
+    .post('/ticket', TicketController.create)
+    .get('/ticket/projects/:idProject', TicketController.readProject)
+    .get('/ticket/users/:idUser', TicketController.readUser)
 
 module.exports = router
