@@ -114,13 +114,34 @@ module.exports = {
     async updateState(req, res) {
         try {
             const decoded = jwtVerifyUser(req, 4)
-            const ticket = await Ticket.findByPk(parseInt(req.params.idTicket))
-            if (!ticket) {
-                throw errorType("TicketNotFound","Ticket not found")
-            }
+            const ticket = checkTicket(decoded, parseInt(req.params.idTicket))
+            ticket.set({active: !ticket.active})
+            await ticket.save()
+            res.status(201).send(ticket)
         }
         catch (err) {
             errorHandler(res, err, "Cannot update the state of this ticket")
         }
     }
+}
+
+async function checkTicket (decodedData, idTicket) {
+    const ticket = await Ticket.findByPk(idTicket)
+    if (!ticket) {
+        throw errorType("TicketNotFound","Ticket not found")
+    }
+    if (decodedData.role > 1) {
+        if (decodedData.id != ticket.issueByUser) {
+            if (decodedData.role == 2) {
+                const project = await Project.findByPk(ticket.idProject)
+                if (project.manageByUser != decodedData.id) {
+                    throw errorType("UnauthorizedAction", "You are not authorized for this action")
+                }
+            }
+            if (decodedData.role > 2) {
+                throw errorType("UnauthorizedAction", "You are not authorized for this action")
+            }
+        }
+    }
+    return ticket
 }
