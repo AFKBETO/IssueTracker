@@ -218,7 +218,7 @@ module.exports = {
             const decoded = jwtVerifyUser(req, 1)
             await Project.destroy({
                 where: {
-                    id: req.params.projectId
+                    id: parseInt(req.params.projectId)
                 }
             })
             res.status(204).send({
