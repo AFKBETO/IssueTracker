@@ -46,11 +46,7 @@ module.exports = {
     },
     /* 
     Read all projects that a specific user participate
-    Permission: {
-        1: Read all projects participated by any user (Administrator)
-            To read all projects, refer to ProjectController
-        Others: Read all participated projects (Manager, Dev & Submittor)
-    }
+    Permission: All
     params: {
         userId: User id (required)
     }
@@ -58,11 +54,6 @@ module.exports = {
     async read (req, res) {
         try {
             const decoded = jwtVerifyUser(req, 4)
-            if (decoded.role > 1 && decoded.id != req.params.userId) {
-                const e = new Error("You are not authorized for this action.")
-                e.name = "UnauthorizedAction"
-                throw e            
-            }
             const user = await User.findByPk(parseInt(req.params.userId),{
                 include: {
                     model: Project,

@@ -42,57 +42,59 @@ module.exports = {
         }
     },
     /* 
-    Read all tickets of a user in a project
-    Permission: {
-        1: Can read all tickets (Administrator)
-        Others: Can read all tickets in project the user participate in
-    }
+    Read all tickets in a project
+    Permission: All
     params {
-        idProject: Project id (0 to find in all projects),
-        idUser: User id (0 to find from all user)
+        idProject: Project id (required)
     }
     */
-    async read (req, res) {
+    async readProject (req, res) {
         try {
             const decoded = jwtVerifyUser(req, 4)
-            const options = {}
-            if (req.params.idProject) {
-                options["ProjectId"] = req.params.idProject
+            
+            const idProject = parseInt(req.params.idProject)
+            if (!idProject) {
+                throw new Error("Syntax error: idProject")
             }
-            // check if user is participating in the project; admin can bypass this condition
-            if (decoded.role > 1) {
-                options["UserId"] = decoded.id
-            }
-            const projects = await Participation.findAll({
-                attributes: ["ProjectId"],
-                where: options
-            })
-            if (!projects.length) {
-                const e = new Error("Project not found")
-                e.name = "ProjectNotFound"
-                throw e
-            }
-            options["ProjectId"] = projects
-            delete options["UserId"]
-            // search for user ID; omitted when search all
-            if (req.params.idUser) {
-                options["UserId"] = req.params.idUser
-            }
-            const users = await Participation.findAll({
-                attributes: ["UserId"],
-                where: options
-            })
-            if (!users.length) {
-                const e = new Error("User not found")
-                e.name = "UserNotFound"
-                throw e
+            const options = {
+                idProject: idProject
             }
             // search for tickets
             const tickets = await Ticket.findAll({
-                where: {
-                    issueByUser: users,
-                    idProject: projects
-                }
+                where: options
+            })
+            if (!tickets.length) {
+                const e = new Error("Ticket not found")
+                e.name = "TicketNotFound"
+                throw e
+            }
+            res.status(201).send(tickets)
+        }
+        catch (err) {
+            errorHandler(res, err, "Unable to find ticket")
+        }
+    },
+    /* 
+    Read all tickets in a project
+    Permission: All
+    params {
+        idUser: User id (required)
+    }
+    */
+    async readUser (req, res) {
+        try {
+            const decoded = jwtVerifyUser(req, 4)
+            
+            const idUser = parseInt(req.params.idUser)
+            if (!idUser) {
+                throw new Error("Syntax error: idUser")
+            }
+            const options = {
+                idUser: idUser
+            }
+            // search for tickets
+            const tickets = await Ticket.findAll({
+                where: options
             })
             if (!tickets.length) {
                 const e = new Error("Ticket not found")
