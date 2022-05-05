@@ -132,7 +132,7 @@ module.exports = {
             res.status(201).send(ticket)
         }
         catch (err) {
-            errorHandler(res, err, "Cannot update the state of this ticket")
+            errorHandler(res, err, "Cannot update data of this ticket")
         }
     },
     /* 
@@ -149,21 +149,25 @@ module.exports = {
     async remove(req, res) {
         try {
             const decoded = jwtVerifyUser(req, 4)
-            const ticket = await checkTicket(decoded,parseInt(req.params.idTicket))
-            ticket.destroy()
+            await checkTicket(decoded,parseInt(req.params.idTicket))
+            await Ticket.destroy({
+                where: {
+                    id: parseInt(req.params.idTicket)
+                }
+            })
             res.status(204).send({
                 message: "The ticket has been removed."
             })
         }
         catch (err) {
-            errorHandler(res, err, "Cannot update the state of this ticket")
+            errorHandler(res, err, "Cannot remove this ticket")
         }
     }
 }
 
 async function checkTicket(decodedData, idTicket) {
     const ticket = await Ticket.findByPk(idTicket)
-    if (decodedData.role > 1) {
+    if (ticket && decodedData.role > 1) {
         if (decodedData.id != ticket.issueByUser) {
             if (decodedData.role == 2) {
                 const project = await Project.findByPk(ticket.idProject)

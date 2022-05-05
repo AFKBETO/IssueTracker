@@ -17,14 +17,14 @@ describe("Administrator user", async function() {
         it("Read all tickets in project 25", async function() {
             await runReadProject(req, 25, 201)
         })
-        it("Read all tickets in project 26, should fail and get 404", async function() {
-            await runReadProject(req, 26, 404)
+        it("Read all tickets in project 28, should fail and get 404", async function() {
+            await runReadProject(req, 28, 404)
         })
         it("Read all tickets of user 1", async function() {
             await runReadUser(req, 1, 201)
         })
-        it("Read all tickets of user 2, should fail and get 404", async function() {
-            await runReadUser(req, 2, 404)
+        it("Read all tickets of user 42069, should fail and get 404", async function() {
+            await runReadUser(req, 42069, 404)
         })
     })
 })

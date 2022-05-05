@@ -7,7 +7,7 @@ const runLogin = require('../Login')
 describe("Administrator user", async function() {
     const req = new Request()
     it("Login as admin", async function() {
-        req.body = req.admin
+        req.body = user.admin
         await runLogin(req, user.admin.name)
     })
     describe("Admin opens a ticket in a project", async function () {
