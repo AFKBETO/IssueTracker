@@ -23,14 +23,22 @@ module.exports = (sequelize, DataTypes) => {
         },
         name: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            validate: {
+                notEmpty: true
+            }
         },
         description: {
             type: DataTypes.TEXT,
         },
         active: {
             type: DataTypes.BOOLEAN,
-            defaultValue: true
+            defaultValue: true,
+            allowNull: false
+        },
+        public: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false
         }
     }, {
         paranoid: true,
