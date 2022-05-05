@@ -55,14 +55,14 @@ describe("Project Manager user", async function() {
         }
     })
     describe("Manager working on project", async function () {
-        req.body.name = "ProjectManager"
-        req.body.description = "A project managed by manager"
         it("Create a new project for self", async function() {
+            req.body.name = "ProjectManager"
+            req.body.description = "A project managed by manager"
             await runCreate(req, 0, 201)
         })
-        req.body.name = "ProjectAdmin"
-        req.body.description = "A project managed by admin"
         it("Try to create a project for an admin, should be ignored", async function() {
+            req.body.name = "ProjectAdmin"
+            req.body.description = "A project managed by admin"
             await runCreateExtra(req, 1, 201, 2)
         })
     })
@@ -78,11 +78,11 @@ describe("Developer user", async function() {
         await runLogin(req, user.dev.name)
     })
     describe("Developer working on project", async function () {
-        req.body = {
-            name: "ProjectDev",
-            description: "A project managed by a dev"
-        }
         it("Create a new project for self, should fail with 403", async function() {
+            req.body = {
+                name: "ProjectDev",
+                description: "A project managed by a dev"
+            }
             await runCreate(req, 0, 403)
         })
     })

@@ -28,8 +28,11 @@ describe("Administrator user", async function() {
         it("Reading all from user 2", async function() {
             await runRead(req, 2, 200)
         })
-        it("Reading all from user 3", async function() {
-            await runRead(req, 3, 200)
+        it("Reading all from ghost user 5, should fail and get 404", async function() {
+            await runRead(req, 5, 404)
+        })
+        it("Reading all from strange id, should fail and get 400", async function() {
+            await runRead(req, "lmao", 400)
         })
     })
     describe("Admin removes participant from project", async function () {
@@ -63,14 +66,11 @@ describe("Project Manager user", async function() {
         })
     })
     describe("Manager reads all projects from a participant", async function () {
-        it("Reading all from user 1, should fail and get 403", async function() {
-            await runRead(req, 1, 403)
+        it("Reading all from user 1", async function() {
+            await runRead(req, 1, 200)
         })
         it("Reading all from user 2", async function() {
             await runRead(req, 2, 200)
-        })
-        it("Reading all from user 3, should fail and get 403", async function() {
-            await runRead(req, 3, 403)
         })
     })
     describe("Manager removes participant from project", async function () {
@@ -101,11 +101,8 @@ describe("Dev user", async function() {
         })
     })
     describe("Dev reads all projects from a participant", async function () {
-        it("Reading all from user 1, should fail and get 403", async function() {
-            await runRead(req, 1, 403)
-        })
-        it("Reading all from user 2, should fail and get 403", async function() {
-            await runRead(req, 2, 403)
+        it("Reading all from user 1", async function() {
+            await runRead(req, 1, 200)
         })
         it("Reading all from user 3", async function() {
             await runRead(req, 3, 200)
@@ -133,14 +130,11 @@ describe("Submittor user", async function() {
         })
     })
     describe("Dev reads all projects from a participant", async function () {
-        it("Reading all from user 1, should fail and get 403", async function() {
-            await runRead(req, 1, 403)
-        })
-        it("Reading all from user 2, should fail and get 403", async function() {
-            await runRead(req, 2, 403)
+        it("Reading all from user 1", async function() {
+            await runRead(req, 1, 200)
         })
         it("Reading all from user 4", async function() {
-            await runRead(req, 4, 200)
+            await runRead(req, 2, 200)
         })
     })
     describe("Dev removes participant from project", async function () {
