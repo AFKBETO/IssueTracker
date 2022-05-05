@@ -7,10 +7,7 @@ const runLogin = require('../Login')
 describe("Administrator user", async function() {
     const req = new Request()
     it("Login as admin", async function() {
-        req.body = {
-            email: user.admin.email,
-            password: user.admin.password
-        }
+        req.body = req.admin
         await runLogin(req, user.admin.name)
     })
     describe("Admin opens a ticket in a project", async function () {
@@ -38,10 +35,7 @@ describe("Administrator user", async function() {
 describe("Submittor user", async function() {
     const req = new Request()
     it("Login as submittor", async function() {
-        req.body = {
-            email: user.submittor.email,
-            password: user.submittor.password
-        }
+        req.body = user.submittor
         await runLogin(req, user.submittor.name)
     })
     describe("Admin opens a ticket in a project", async function () {
@@ -54,10 +48,10 @@ describe("Submittor user", async function() {
             }
             await runCreate(req, 201)
         })
-        it("Opening a ticket in project 27, should fail and get 403", async function() {
+        it("Opening a ticket in project 26, should fail and get 403", async function() {
             req.body = {
                 issueByUser: user.submittor.id,
-                idProject: 27,
+                idProject: 26,
                 name: "SubmittorBug2",
                 description: "Another bug caused by submittor"
             }

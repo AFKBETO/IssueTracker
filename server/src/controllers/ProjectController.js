@@ -152,8 +152,6 @@ module.exports = {
             if (decoded.role == 2){
                 options.manageByUser = decoded.id
             }
-
-
             // parse other data to modify
             if (req.body.name) {
                 data.name = req.body.name 
