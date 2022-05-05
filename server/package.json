@@ -17,7 +17,8 @@
     "testparticipation": "mocha ./tests/participation/participation.test.js",
     "testcreateticket": "mocha ./tests/ticket/createTicket.test.js",
     "testreadticket": "mocha ./tests/ticket/readTicket.test.js",
-    "testupdateticket": "mocha ./tests/ticket/updateTicket.test.js"
+    "testupdateticket": "mocha ./tests/ticket/updateTicket.test.js",
+    "testremoveticket": "mocha ./tests/ticket/removeTicket.test.js"
   },
   "keywords": [],
   "author": "",
