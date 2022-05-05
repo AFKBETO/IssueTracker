@@ -101,7 +101,7 @@ module.exports = {
         }
     },
     /* 
-    Update state of a ticket
+    Update data of a ticket
     Permission: {
         1: Can update tickets in all project
         2: Can update tickets in managed project
@@ -110,14 +110,50 @@ module.exports = {
     params {
         idTicket: Ticket id (required)
     }
+    body {
+        name: Ticket name (not empty),
+        description: Ticket description,
+        active: Ticket's status
+    }
     */
-    async updateState(req, res) {
+    async update(req, res) {
         try {
             const decoded = jwtVerifyUser(req, 4)
-            const ticket = checkTicket(decoded, parseInt(req.params.idTicket))
-            ticket.set({active: !ticket.active})
+            const ticket = await checkTicket(decoded,parseInt(req.params.idTicket))
+            if (!ticket) {
+                throw errorType("TicketNotFound","Ticket not found")
+            }
+            ticket.set({
+                active: !(!req.body.active),
+                name: req.body.name,
+                description: req.body.description
+            })
             await ticket.save()
             res.status(201).send(ticket)
+        }
+        catch (err) {
+            errorHandler(res, err, "Cannot update the state of this ticket")
+        }
+    },
+    /* 
+    Delete a ticket
+    Permission: {
+        1: Can delete tickets in all project
+        2: Can delete tickets in managed project
+        3-4: Can delete owned tickets
+    }
+    params {
+        idTicket: Ticket id (required)
+    }
+    */
+    async remove(req, res) {
+        try {
+            const decoded = jwtVerifyUser(req, 4)
+            const ticket = await checkTicket(decoded,parseInt(req.params.idTicket))
+            ticket.destroy()
+            res.status(204).send({
+                message: "The ticket has been removed."
+            })
         }
         catch (err) {
             errorHandler(res, err, "Cannot update the state of this ticket")
@@ -125,11 +161,8 @@ module.exports = {
     }
 }
 
-async function checkTicket (decodedData, idTicket) {
+async function checkTicket(decodedData, idTicket) {
     const ticket = await Ticket.findByPk(idTicket)
-    if (!ticket) {
-        throw errorType("TicketNotFound","Ticket not found")
-    }
     if (decodedData.role > 1) {
         if (decodedData.id != ticket.issueByUser) {
             if (decodedData.role == 2) {

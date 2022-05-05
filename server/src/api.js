@@ -26,5 +26,6 @@ router
     .post('/ticket', TicketController.create)
     .get('/ticket/projects/:idProject', TicketController.readProject)
     .get('/ticket/users/:idUser', TicketController.readUser)
+    .patch('/ticket/:idUser', TicketController.update)
 
 module.exports = router
