@@ -5,7 +5,7 @@ const { Op } = require('sequelize')
 
 module.exports = {
     /* 
-    Read projects
+    Create a new project
     Permission: {
         1: Create a project and assign it to a manager (Administrator)
         2: Create a project (Project Manager)
@@ -26,6 +26,9 @@ module.exports = {
             var id = decoded.id
             // check if current user is admin
             // and assigning the new project to another manager
+            if (!req.body.name) {
+                throw new Error("Project name not found.")
+            }
             if (decoded.role == 1 && req.body.manageByUser) {
                 const user = await User.findOne({
                     where: {
@@ -62,30 +65,46 @@ module.exports = {
         return
     },
     /* 
-    Read all projects
-    Permission: {
-        1: Read all projects (Administrator)
-        2: Read all managed projects (Project Manager)
-    }
+    Read all projects of a user
+    Permission: 1 (Administrator)
     params: {
         userId: User ID (for admin options)
     }
     */
-    async read (req, res) {
+    async readAll (req, res) {
         try {
-            const decoded = jwtVerifyUser(req, 2)
+            const decoded = jwtVerifyUser(req, 1)
             const option = {}
             // parse options
-            if (req.params.userId > 0) {
-                option.manageByUser = req.params.userId
-            }
-            if (decoded.role == 2 && Object.keys(option).length) {
-                const e = new Error("You are not authorized for this action.")
-                e.name = "UnauthorizedAction"
-                throw e
+            const userId = parseInt(req.params.userId)
+            if (userId > 0) {
+                option.manageByUser = userId
             }
             const projects = await Project.findAll({
                 where: option
+            })
+            if (projects.length == 0) {
+                const e = new Error("Projects not found")
+                e.name = "ProjectNotFound"
+                throw e
+            }
+            res.status(200).send(projects)
+        }
+        catch (err) {
+            errorHandler(res, err, "Unable to read projects")
+        }
+    },
+    /* 
+    Read all managed projects
+    Permission: 2 (Admin + Manager)
+    */
+    async read (req, res) {
+        try {
+            const decoded = jwtVerifyUser(req, 2)
+            const projects = await Project.findAll({
+                where: {
+                    manageByUser: decoded.id
+                }
             })
             if (projects.length == 0) {
                 const e = new Error("Projects not found")

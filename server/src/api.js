@@ -10,7 +10,7 @@ router.post('/login', AuthenticationController.login)
 
 router.post('/project', ProjectController.create)
 router.get('/project', ProjectController.read)
-router.get('/project/:userId', ProjectController.read)
+router.get('/project/:userId', ProjectController.readAll)
 router.patch('/project/:projectId', ProjectController.update)
 router.delete('/project/:projectId', ProjectController.remove)
 
