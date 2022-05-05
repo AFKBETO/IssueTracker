@@ -75,7 +75,7 @@ module.exports = {
         }
     },
     /* 
-    Read all tickets in a project
+    Read all tickets of a user
     Permission: All
     params {
         idUser: User id (required)

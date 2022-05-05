@@ -22,14 +22,6 @@ fs
     })
 
 
-db['Project'].hasMany(db['Ticket'],{
-    onDelete: 'CASCADE'
-})
-db['Ticket'].belongsTo(db['Project'])
-db['User'].hasMany(db['Ticket'], {
-    onDelete: 'CASCADE'
-})
-db['Ticket'].belongsTo(db['User'])
 db['Project'].belongsToMany(db['User'], { through: db['Participation'] })
 db['User'].belongsToMany(db['Project'], { through: db['Participation'] })
 
