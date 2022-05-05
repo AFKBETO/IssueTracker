@@ -1,6 +1,6 @@
 const { Project, User, Participation } = require('../database/models')
 const { jwtVerifyUser } = require('./VerifyController')
-const { errorHandler } = require('./ErrorHandler')
+const { errorHandler, errorType } = require('./ErrorHandler')
 const { Op } = require('sequelize')
 
 module.exports = {
@@ -26,9 +26,6 @@ module.exports = {
             var id = decoded.id
             // check if current user is admin
             // and assigning the new project to another manager
-            if (!req.body.name) {
-                throw new Error("Project name not found.")
-            }
             if (decoded.role == 1 && req.body.manageByUser) {
                 const user = await User.findOne({
                     where: {
@@ -36,9 +33,7 @@ module.exports = {
                     }
                 })
                 if (!user) {
-                    const e = new Error("User not found")
-                    e.name = "UserNotFound"
-                    throw e
+                    throw errorType("UserNotFound","User not found")
                 }
                 if (user.role > 2) {
                     throw Error("The selected user does not have the permission to manage a project.")
@@ -84,9 +79,7 @@ module.exports = {
                 where: option
             })
             if (projects.length == 0) {
-                const e = new Error("Projects not found")
-                e.name = "ProjectNotFound"
-                throw e
+                throw errorType("ProjectNotFound","Project not found")
             }
             res.status(200).send(projects)
         }
@@ -107,9 +100,7 @@ module.exports = {
                 }
             })
             if (projects.length == 0) {
-                const e = new Error("Projects not found")
-                e.name = "ProjectNotFound"
-                throw e
+                throw errorType("ProjectNotFound","Project not found")
             }
             res.status(200).send(projects)
 
@@ -149,9 +140,7 @@ module.exports = {
                 if (req.body.manageByUser){
                     const user = await User.findByPk(req.body.manageByUser)
                     if (!user) {
-                        const e = new Error("User not found")
-                        e.name = "UserNotFound"
-                        throw e
+                        throw errorType("UserNotFound","User not found")
                     }
                     if (user.role > 2) {
                         throw new Error("The selected user does not have the permission to manage a project.")
@@ -174,16 +163,13 @@ module.exports = {
             }
             // throw error if no modification specified
             if (Object.keys(data).length == 0){
-                const e = new Error("No parameter set")
-                throw e
+                throw new Error("No parameter set")
             }
             const project = await Project.findOne({
                 where: options
             })
             if (!project){
-                const e = new Error("Project not found or not managed by user.")
-                e.name = "ProjectNotFound"
-                throw e
+                throw errorType("ProjectNotFound","Project not found")
             }
             project.set(data)
             await project.save()

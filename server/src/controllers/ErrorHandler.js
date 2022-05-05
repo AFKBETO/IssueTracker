@@ -39,5 +39,10 @@ module.exports = {
         res.status(error.status).send({
             error: `${message}: ${error.message}`
         })
+    },
+    errorType(errorName, errorMessage) {
+        const e = new Error(errorMessage)
+        e.name = errorName
+        return e
     }
 }

@@ -1,7 +1,7 @@
 const { User } = require('../database/models')
 const jwt = require('jsonwebtoken')
 const config = require('../database/config/config')
-const { errorHandler } = require('./ErrorHandler')
+const { errorHandler, errorType } = require('./ErrorHandler')
 
 function jwtSignUser(user){
     const ONE_HOUR = 60*60
@@ -34,9 +34,7 @@ module.exports = {
                 }
             })
             if (!user || !user.comparePassword(password)) {
-                const e = new Error("Email and/or password incorrect.")
-                e.name = "WrongLogin"
-                throw e
+                throw errorType("WrongLogin", "Email and/or password incorrect.")
             }
             
             res.status(200).send({

@@ -1,6 +1,6 @@
 const { User, Project, Participation } = require('../database/models')
 const { jwtVerifyUser } = require('./VerifyController')
-const { errorHandler } = require('./ErrorHandler')
+const { errorHandler, errorType } = require('./ErrorHandler')
 
 module.exports = {
     /* 
@@ -20,14 +20,10 @@ module.exports = {
             // check if user has authorization
             const project = await Project.findByPk(req.body.projectId)
             if (!project) {
-                const e = new Error("Project not found.")
-                e.name = "ProjectNotFound"
-                throw e
+                throw errorType("ProjectNotFound","Project not found")
             }
             if (decoded.role == 2 && decoded.id != project.manageByUser) {
-                const e = new Error("You are not authorized to assign people to this project.")
-                e.name = "UnauthorizedAction"
-                throw e
+                throw errorType("UnauthorizedAction", "You are not authorized to assign people to this project.")
             }
             const [participant] = await Participation.findOrCreate({
                 where:{
@@ -63,9 +59,7 @@ module.exports = {
                 }
             })
             if (!user) {
-                const e = new Error("User not found")
-                e.name = "UserNotFound"
-                throw e                     
+                throw errorType("UserNotFound","User not found")
             }
             res.status(200).send(user.Projects)
             
@@ -91,14 +85,10 @@ module.exports = {
             // search if project is valid
             const project = await Project.findByPk(req.body.projectId)
             if (!project) {
-                const e = new Error("Project not found")
-                e.name = "ProjectNotFound"
-                throw e                  
+                throw errorType("ProjectNotFound","Project not found")                 
             }
             if (decoded.role == 2 && decoded.id != project.manageByUser) {
-                const e = new Error("You are not authorized to modify others' projects.")
-                e.name = "UnauthorizedAction"
-                throw e                  
+                throw errorType("UnauthorizedAction", "You are not authorized to modify others' projects.")
             }
             if (req.body.userId == project.manageByUser) {
                 throw new Error("Cannot remove current manager from project")

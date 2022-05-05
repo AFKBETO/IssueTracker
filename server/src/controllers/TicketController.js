@@ -1,7 +1,6 @@
 const { User, Project, Participation, Ticket } = require('../database/models')
 const { jwtVerifyUser } = require('./VerifyController')
-const { errorHandler } = require('./ErrorHandler')
-const { decode } = require('jsonwebtoken')
+const { errorHandler, errorType } = require('./ErrorHandler')
 
 module.exports = {
     /* 
@@ -24,9 +23,7 @@ module.exports = {
                 }
             })
             if (!participation) {
-                const e = new Error("You are not in the project.")
-                e.name = "UnauthorizedAction"
-                throw e
+                throw errorType("UnauthorizedAction","You are not in the project.")
             }
             //create the ticket
             const ticket = await Ticket.create({
@@ -64,9 +61,7 @@ module.exports = {
                 where: options
             })
             if (!tickets.length) {
-                const e = new Error("Ticket not found")
-                e.name = "TicketNotFound"
-                throw e
+                throw errorType("TicketNotFound","Ticket not found")
             }
             res.status(201).send(tickets)
         }
@@ -97,14 +92,35 @@ module.exports = {
                 where: options
             })
             if (!tickets.length) {
-                const e = new Error("Ticket not found")
-                e.name = "TicketNotFound"
-                throw e
+                throw errorType("TicketNotFound","Ticket not found")
             }
             res.status(201).send(tickets)
         }
         catch (err) {
             errorHandler(res, err, "Unable to find ticket")
+        }
+    },
+    /* 
+    Update state of a ticket
+    Permission: {
+        1: Can update tickets in all project
+        2: Can update tickets in managed project
+        3-4: Can update owned tickets
+    }
+    params {
+        idTicket: Ticket id (required)
+    }
+    */
+    async updateState(req, res) {
+        try {
+            const decoded = jwtVerifyUser(req, 4)
+            const ticket = await Ticket.findByPk(parseInt(req.params.idTicket))
+            if (!ticket) {
+                throw errorType("TicketNotFound","Ticket not found")
+            }
+        }
+        catch (err) {
+            errorHandler(res, err, "Cannot update the state of this ticket")
         }
     }
 }
