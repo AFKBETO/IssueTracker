@@ -90,7 +90,7 @@ module.exports = {
                 throw new Error("Syntax error: idUser")
             }
             const options = {
-                idUser: idUser
+                issueByUser: idUser
             }
             // search for tickets
             const tickets = await Ticket.findAll({
