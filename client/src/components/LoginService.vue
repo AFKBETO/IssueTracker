@@ -1,7 +1,7 @@
 <template>
-    <div class="container-sm p-5 my-5">
+    <div class="container-sm p-5 my-5 justify-content-center">
         <div class="h1 text-white bg-dark p-2 my-0">Login</div>
-        <form @submit.prevent="login" class="d-flex align-items-center justify-content-center flex-column border pb-3">
+        <form @submit.prevent="login" class="d-flex align-items-center justify-content-center flex-column border pb-3" novalidate="true">
             <div class="form-floating w-50 my-3">
                 <input
                     type="email"
@@ -23,14 +23,20 @@
                 <label for="password">Password</label>
             </div>
             <button class="btn btn-dark active w-auto" type="submit">LOGIN</button>
-            <div class="text-danger" v-html="error" />
         </form>
-        
+        <div class="text-danger w-60 text-center" v-if="errPassword.length">
+            <div v-for="line in errPassword" :key="line.message"><small>{{ line.message }}</small></div>
+        </div>
+        <div class="text-danger w-60 text-center" v-if="errEmail">
+            <small>You must provide a valid email address</small>
+        </div>
     </div>
 </template>
 
 <script>
 import { login, setAuthToken } from '@/services/AuthenticationService.js'
+import { passwordValidator, emailValidator } from '@/services/FormValidator.js'
+
 export default {
     data() {
         return {
@@ -38,30 +44,44 @@ export default {
                 email: '',
                 password: ''
             },
-            error: null
+            errEmail: false,
+            errPassword: []
         }
     },
     methods: {
         async login () {
-            try {
-                const response = await login({
-                    email: this.loginDetails.email,
-                    password: this.loginDetails.password
-                })
-                this.loginDetails.email = ''
-                this.loginDetails.password = ''
-                setAuthToken(response.data.token)
-                console.log(response.data)
-                this.$emit('login')
-                this.$router.push('/')
+            const errEmail = emailValidator(this.loginDetails.email)
+            if (errEmail) {
+                this.errEmail = errEmail
+                setTimeout(() => {
+                    this.errEmail = null
+                }, 3000)
+                return
             }
-            catch (err) {
-                this.error = err.response.data.error
+            const errPassword = passwordValidator(this.loginDetails.password)
+            if (errPassword.length) {
+                this.errPassword = errPassword
                 this.loginDetails.password = ''
                 setTimeout(() => {
-                    this.error = null
-                }, 5000)
+                    this.errPassword = []
+                }, 3000)
+                return
             }
+            this.errEmail = null
+            this.errPassword = []
+            const response = await login({
+                email: this.loginDetails.email,
+                password: this.loginDetails.password
+            })
+            this.loginDetails.email = ''
+            this.loginDetails.password = ''
+            setAuthToken(response.data.token)
+            console.log(response.data)
+            this.$emit('login')
+            this.$router.push('/')
+           
+            
+            
         }    
     },
 }
