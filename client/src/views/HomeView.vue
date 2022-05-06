@@ -6,7 +6,7 @@
           <li class="nav-item">
             <router-link
               class="nav-link border text-light p-2"
-              :class="activeClass('project')" to="/">Projects</router-link>
+              :class="activeClass('projects')" to="/">Projects</router-link>
           </li>
           <li class="nav-item">
             <router-link

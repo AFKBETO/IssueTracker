@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginService from '../components/LoginService.vue'
 import RegisterService from '../components/RegisterService.vue'
+import ProjectsView from '../views/ProjectsView.vue'
 import ProjectView from '../views/ProjectView.vue'
 import AnotherView from '../views/AnotherView.vue'
 import { isLoggedIn } from '../services/AuthenticationService.js'
@@ -17,6 +18,11 @@ const routes = [
     children: [
       {
         path: '/',
+        name: 'projects',
+        component: ProjectsView
+      },
+      {
+        path: '/projects/:id',
         name: 'project',
         component: ProjectView
       },
