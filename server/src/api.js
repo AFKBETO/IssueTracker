@@ -13,7 +13,7 @@ router
 router
     .post('/project', ProjectController.create)
     .get('/project', ProjectController.read)
-    .get('/project/:userId', ProjectController.readAll)
+    .get('/project/:projectId', ProjectController.readProject)
     .patch('/project/:projectId', ProjectController.update)
     .delete('/project/:projectId', ProjectController.remove)
 

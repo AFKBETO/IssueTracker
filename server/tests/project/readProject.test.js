@@ -1,5 +1,5 @@
 const { assert } = require('chai')
-const { read, readAll } = require('../../src/controllers/ProjectController.js')
+const { read, readProject } = require('../../src/controllers/ProjectController.js')
 const { Response, Request } = require('../ReqRes')
 const user = require('../devinit/user.init')
 const runLogin = require('../Login')
@@ -15,14 +15,11 @@ describe("Administrator user", async function() {
     })
     describe("Admin working on project", async function () {
         req.body = {}
-        it("Read all projects", async function() {
-            await runReadAll(req, 0, 200)
+        it("Read project 1", async function() {
+            await runReadProject(req, 1, 200)
         })
-        it("Read all projects of 2", async function() {
-            await runReadAll(req, 2, 200)
-        })
-        it("Read all projects of 3, should fail and get 404", async function() {
-            await runReadAll(req, 3, 404)
+        it("Read all projects of 3, should fail and get 403", async function() {
+            await runReadProject(req, 3, 403)
         })
         it("Read all projects of self", async function() {
             await runRead(req, user.admin.id, 200)
@@ -44,11 +41,11 @@ describe("Project Manager user", async function() {
         it("Read all projects of self", async function() {
             await runRead(req, user.manager.id, 200)
         })
-        it("Read all projects, should fail and get 403", async function() {
-            await runReadAll(req, 0, 403)
+        it("Read project 7, should fail and get 403", async function() {
+            await runReadProject(req, 7, 403)
         })
-        it("Read all projects of 2 (self), should fail and get 403", async function() {
-            await runReadAll(req, 2, 403)
+        it("Read project 3", async function() {
+            await runReadProject(req, 3, 200)
         })
     })
 })
@@ -83,18 +80,11 @@ async function runRead(request, userid, statusCode) {
     }
 }
 
-async function runReadAll(request, userid, statusCode) {
-    if (userid) {
-        request.params["userId"] = userid
+async function runReadProject(request, projectid, statusCode) {
+    if (projectid) {
+        request.params["projectId"] = projectid
     }
     const res = new Response()
-    await readAll(request, res)
+    await readProject(request, res)
     assert.equal(res.data.status, statusCode, `Status code should be ${statusCode}, but got ${res.data.status}: ${res.data.error}`)
-    if(userid && res.data.status == 200) {
-        const keys = Object.keys(res.data)
-        for (let key of keys) {
-            if (key == "status") continue
-            assert.equal(res.data[key].manageByUser, userid, `Should not read projects of other users`)
-        }
-    }
 }

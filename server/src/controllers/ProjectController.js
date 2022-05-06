@@ -1,4 +1,4 @@
-const { Project, User, Participation } = require('../database/models')
+const { Project, User, Participation, Ticket } = require('../database/models')
 const { jwtVerifyUser } = require('./VerifyController')
 const { errorHandler, errorType } = require('./ErrorHandler')
 const { Op } = require('sequelize')
@@ -60,28 +60,34 @@ module.exports = {
         return
     },
     /* 
-    Read all projects of a user
-    Permission: 1 (Administrator)
+    Read a specific project
+    Permission: All
     params: {
-        userId: User ID (for admin options)
+        projectId: Project ID
     }
     */
-    async readAll (req, res) {
+    async readProject (req, res) {
         try {
-            const decoded = jwtVerifyUser(req, 1)
-            const option = {}
+            const decoded = jwtVerifyUser(req, 4)
             // parse options
-            const userId = parseInt(req.params.userId)
-            if (userId > 0) {
-                option.manageByUser = userId
-            }
-            const projects = await Project.findAll({
-                where: option
+            const projectId = parseInt(req.params.projectId)
+            const participation = await Participation.findOne({
+                where: {
+                    UserId: decoded.id,
+                    ProjectId: projectId
+                }
             })
-            if (projects.length == 0) {
-                throw errorType("ProjectNotFound","Project not found")
+            const ticket = await Ticket.findOne({
+                where: {
+                    issueByUser: decoded.id,
+                    idProject: projectId
+                }
+            })
+            if (!participation && !ticket) {
+                throw errorType("UnauthorizedAction", "You are not part of this project")
             }
-            res.status(200).send(projects)
+            const project = await Project.findByPk(projectId)
+            res.status(200).send(project)
         }
         catch (err) {
             errorHandler(res, err, "Unable to read projects")
