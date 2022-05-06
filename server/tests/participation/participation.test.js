@@ -28,9 +28,6 @@ describe("Administrator user", async function() {
         it("Reading all from user 2", async function() {
             await runRead(req, 2, 200)
         })
-        it("Reading all from ghost user 5, should fail and get 404", async function() {
-            await runRead(req, 5, 404)
-        })
         it("Reading all from strange id, should fail and get 400", async function() {
             await runRead(req, "lmao", 400)
         })
