@@ -22,20 +22,20 @@
                     required>
                 <label for="password">Password</label>
             </div>
-            <button class="btn btn-dark active w-auto" type="submit">LOGIN</button>
+            <button class="btn btn-dark active w-auto" :disabled="errorForm" type="submit">LOGIN</button>
         </form>
-        <div class="text-danger w-60 text-center" v-if="errPassword.length">
-            <div v-for="line in errPassword" :key="line.message"><small>{{ line.message }}</small></div>
-        </div>
         <div class="text-danger w-60 text-center" v-if="errEmail">
             <small>You must provide a valid email address</small>
+        </div>
+        <div class="text-danger w-60 text-center" v-if="errMessage">
+            <small>{{ errMessage }}</small>
         </div>
     </div>
 </template>
 
 <script>
 import { login, setAuthToken } from '@/services/AuthenticationService.js'
-import { passwordValidator, emailValidator } from '@/services/FormValidator.js'
+import { emailValidator } from '@/services/FormValidator.js'
 
 export default {
     data() {
@@ -45,44 +45,46 @@ export default {
                 password: ''
             },
             errEmail: false,
-            errPassword: []
+            errMessage: null
+        }
+    },
+    watch: {
+        'loginDetails.email': {
+            handler() {
+                this.errEmail = emailValidator(this.loginDetails.email)
+            }
         }
     },
     methods: {
         async login () {
-            const errEmail = emailValidator(this.loginDetails.email)
-            if (errEmail) {
-                this.errEmail = errEmail
-                setTimeout(() => {
-                    this.errEmail = null
-                }, 3000)
-                return
-            }
-            const errPassword = passwordValidator(this.loginDetails.password)
-            if (errPassword.length) {
-                this.errPassword = errPassword
+            try{
+                this.errEmail = false
+                const response = await login({
+                    email: this.loginDetails.email,
+                    password: this.loginDetails.password
+                })
+                this.loginDetails.email = ''
                 this.loginDetails.password = ''
+                setAuthToken(response.data.token)
+                console.log(response.data)
+                this.$emit('login')
+                this.$router.push('/')
+            }
+            catch (err) {
+                this.errMessage = err.response.data.error
+                this.loginDetails.password = ""
                 setTimeout(() => {
-                    this.errPassword = []
-                }, 3000)
+                    this.errMessage = null
+                }, 4000)
                 return
             }
-            this.errEmail = null
-            this.errPassword = []
-            const response = await login({
-                email: this.loginDetails.email,
-                password: this.loginDetails.password
-            })
-            this.loginDetails.email = ''
-            this.loginDetails.password = ''
-            setAuthToken(response.data.token)
-            console.log(response.data)
-            this.$emit('login')
-            this.$router.push('/')
-           
-            
             
         }    
     },
+    computed: {
+        errorForm(){
+            return !this.loginDetails.email || !this.loginDetails.password || this.errEmail
+        }
+    }
 }
 </script>

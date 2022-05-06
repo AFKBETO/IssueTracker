@@ -10,7 +10,7 @@ export function passwordValidator(password) {
         errors.push({message: "Password needs at least 1 uppercase character."})
     }
     if (!/(\W)|(_)+/.test(password)) {
-        errors.push({message: "Password needs at least 1 lowercase character."})
+        errors.push({message: "Password needs at least 1 special character."})
     }
     if (!/[\s\S]{8,32}/.test(password)){
         errors.push({message: "Password must be 8-32 character long."})
