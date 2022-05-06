@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginService from '../components/LoginService.vue'
 import RegisterService from '../components/RegisterService.vue'
+import ProjectView from '../views/ProjectView.vue'
+import AnotherView from '../views/AnotherView.vue'
 import { isLoggedIn } from '../services/AuthenticationService.js'
 
 const routes = [
@@ -11,7 +13,19 @@ const routes = [
     component: HomeView,
     meta: {
       allowAnonymous: false
-    }
+    },
+    children: [
+      {
+        path: '/',
+        name: 'project',
+        component: ProjectView
+      },
+      {
+        path: '/another',
+        name: 'another',
+        component: AnotherView
+      }
+    ]
   },
   {
     path: '/login',
