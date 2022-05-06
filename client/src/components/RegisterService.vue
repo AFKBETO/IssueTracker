@@ -42,8 +42,19 @@
                     required>
                 <label for="repeat-password">Repeat password</label>
             </div>
-            <button class="btn btn-dark active w-auto" :disabled="repeatPasswordError" type="submit">REGISTER</button>
-            <div class="text-danger" v-html="error" />
+            <button class="btn btn-dark active w-auto" :disabled="errorForm" type="submit">REGISTER</button>
+            <div class="text-danger w-60 text-center" v-if="errEmail">
+                <small>You must provide a valid email address</small>
+            </div>
+            <div class="text-danger w-60 text-center" v-if="errPassword.length">
+                <div v-for="line in errPassword" :key="line.message"><small>{{ line.message }}</small></div>
+            </div>
+            <div class="text-danger w-60 text-center" v-if="repeatPasswordError">
+                <small>Repeat password is not correct</small>
+            </div>
+            <div class="text-danger w-60 text-center" v-if="errMessage">
+                <small>{{ errMessage }}</small>
+            </div>
         </form>
         
     </div>
@@ -51,6 +62,7 @@
 
 <script>
 import { register } from '@/services/AuthenticationService.js'
+import { passwordValidator, emailValidator } from '@/services/FormValidator.js'
 export default {
     data() {
         return {
@@ -60,44 +72,65 @@ export default {
                 password: ''
             },
             repeatPassword: '',
-            repeatPasswordError: true,
-            error: null
-            
+            repeatPasswordError: false,
+            errEmail: false,
+            errPassword: [],
+            errMessage: null
         }
     },
     watch: {
         repeatPassword: {
             handler(){
-                if (!this.registerDetails.password || this.repeatPassword != this.registerDetails.password) {
-                    this.repeatPasswordError = true
-                }
-                else {
-                    this.repeatPasswordError = false
-                }
+                this.repeatPasswordError = this.repeatPassword != this.registerDetails.password
+            }
+        },
+        'registerDetails.email': {
+            handler() {
+                this.errEmail = emailValidator(this.registerDetails.email)
+            }
+        },
+        'registerDetails.password': {
+            handler() {
+                this.errPassword = passwordValidator(this.registerDetails.password)
             }
         }
     },
     methods: {
         async register () {
             try {
-                    const response = await register(this.registerDetails)
-                    this.registerDetails.name = ''
-                    this.registerDetails.email = ''
-                    this.registerDetails.password = ''
-                    this.repeatPassword = ''
-                    this.repeatPasswordError = true
-                    console.log(response.data)
-                }
-            
+                this.errEmail = false
+                this.errPassword = []
+                const response = await register(this.registerDetails)
+                this.registerDetails.name = ''
+                this.registerDetails.email = ''
+                this.registerDetails.password = ''
+                this.repeatPassword = ''
+                this.repeatPasswordError = true
+                console.log(response.data)
+                this.$router.push('/')
+            }
             catch (err) {
-                this.error = err.response.data.error
+                this.errMessage = err.response.data.error
                 this.registerDetails.password = ''
                 this.repeatPassword = ''
                 setTimeout(() => {
-                    this.error = null
-                }, 5000)
+                    this.errMessage = null
+                }, 4000)
+                return
             }
+
         }    
     },
+    computed: {
+        errorForm(){
+            return !this.registerDetails.name ||
+                    !this.registerDetails.email ||
+                    !this.registerDetails.password ||
+                    !this.repeatPassword ||
+                    this.errEmail ||
+                    this.errPassword.length > 0 ||
+                    this.repeatPasswordError
+        }
+    }
 }
 </script>

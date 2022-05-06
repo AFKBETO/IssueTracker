@@ -67,12 +67,11 @@ export default {
                 this.loginDetails.password = ''
                 setAuthToken(response.data.token)
                 console.log(response.data)
-                this.$emit('login')
                 this.$router.push('/')
             }
             catch (err) {
                 this.errMessage = err.response.data.error
-                this.loginDetails.password = ""
+                this.loginDetails.password = ''
                 setTimeout(() => {
                     this.errMessage = null
                 }, 4000)
