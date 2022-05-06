@@ -32,23 +32,48 @@ const user = {
 }
 
 User.findOrCreate({
-    where: {id: 1},
+    where: {id: user.admin.id},
     defaults: user.admin
 })
 
 User.findOrCreate({
-    where: {id: 2},
+    where: {id: user.manager.id},
     defaults: user.manager
 })
 
 User.findOrCreate({
-    where: {id: 3},
+    where: {id: user.dev.id},
     defaults: user.dev
 })
 
 User.findOrCreate({
-    where: {id: 4},
+    where: {id: user.submittor.id},
     defaults: user.submittor
+})
+
+User.update(user.admin, {
+    where: {
+        id: user.admin.id
+    },
+    individualHooks: true
+})
+User.update(user.manager, {
+    where: {
+        id: user.manager.id
+    },
+    individualHooks: true
+})
+User.update(user.dev, {
+    where: {
+        id: user.dev.id
+    },
+    individualHooks: true
+})
+User.update(user.submittor, {
+    where: {
+        id: user.submittor.id
+    },
+    individualHooks: true
 })
 
 module.exports = user
