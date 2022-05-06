@@ -15,6 +15,7 @@ export function logout(){
 }
 export function setAuthToken(token) {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    localStorage.setItem('axios', JSON.stringify(axios))
     localStorage.setItem(AUTH_TOKEN_KEY, token)
 }
 export function getAuthToken() {
@@ -26,8 +27,15 @@ export function clearAuthToken() {
 }
 export function isLoggedIn() {
     const authToken = getAuthToken()
-    if (authToken) localStorage.setItem(`displayName`, decode(authToken).name)
-    else localStorage.removeItem(`displayName`)
+    if (authToken) {
+        const data = decode(authToken)
+        localStorage.setItem(`displayName`, data.name)
+        localStorage.setItem(`userId`, data.id)
+    }
+    else {
+        localStorage.removeItem(`displayName`)
+        localStorage.removeItem(`userId`)
+    }
     return !(!authToken) && !isTokenExpired(authToken)
 }
 export function getUserInfo() {
