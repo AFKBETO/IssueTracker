@@ -103,6 +103,16 @@
             ],
             "scripts": []
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "prerender": false,
+            "ssr": false,
+            "browserTarget": "client:build:production",
+            "firebaseProject": "issuetracker-efd4b",
+            "firebaseHostingSite": "issuetracker-efd4b"
+          }
         }
       }
     }

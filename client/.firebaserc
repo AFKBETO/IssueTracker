@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "issuetracker-efd4b": {
+      "hosting": {
+        "client": [
+          "issuetracker-efd4b"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "issuetracker-efd4b"
+  }
+}
