@@ -22,7 +22,7 @@ export class EmailLoginComponent implements OnInit {
   ngOnInit (): void {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.minLength(6), Validators.required]],
+      password: ['', [Validators.minLength(8), Validators.maxLength(32), Validators.pattern(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])((?=.*\W)|(?=.*_))^[^ ]+$/), Validators.required]],
       passwordConfirm: ['', []]
     })
   }
@@ -63,6 +63,30 @@ export class EmailLoginComponent implements OnInit {
     }
   }
 
+  get pwdHasNumber () {
+    return /\d+/.test(this.password?.value)
+  }
+
+  get pwdHasLowercase () {
+    return /[a-z]+/.test(this.password?.value)
+  }
+
+  get pwdHasUppercase () {
+    return /[A-Z]+/.test(this.password?.value)
+  }
+
+  get pwdHasSpecial () {
+    return /(\W)|(_)+/.test(this.password?.value)
+  }
+
+  get pwdLength () {
+    return /[\s\S]{8,32}/.test(this.password?.value)
+  }
+
+  get pwdNotStartWhite () {
+    return /^[^ ]+/.test(this.password?.value)
+  }
+
   async onSubmit () {
     this.loading = true
 
@@ -81,7 +105,8 @@ export class EmailLoginComponent implements OnInit {
         this.serverMessage = 'Check your email'
       }
     } catch (err) {
-      this.serverMessage = <string>err
+      const error: Error = <Error>err
+      this.serverMessage = error.message
     }
     this.loading = false
   }

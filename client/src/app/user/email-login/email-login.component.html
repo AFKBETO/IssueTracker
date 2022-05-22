@@ -47,7 +47,12 @@
       />
 
       <mat-error *ngIf="password?.invalid && password?.dirty">
-        Password must be at least 6 characters long
+        <p *ngIf="!pwdLength; else next1">Password must be 8-32 characters long</p>
+        <ng-template #next1><p *ngIf="!pwdHasNumber; else next2">Password must has at least 1 number</p></ng-template>
+        <ng-template #next2><p *ngIf="!pwdHasLowercase; else next3">Password must has at least 1 lowercase character</p></ng-template>
+        <ng-template #next3><p *ngIf="!pwdHasUppercase; else next4">Password must has at least 1 uppercase character</p></ng-template>
+        <ng-template #next4><p *ngIf="!pwdHasSpecial; else next5">Password must has at least 1 special character</p></ng-template>
+        <ng-template #next5><p *ngIf="!pwdNotStartWhite">Password must not start with white character</p></ng-template>
       </mat-error>
     </mat-form-field>
 
