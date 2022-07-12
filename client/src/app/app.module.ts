@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser'
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { SharedModule } from './shared/shared.module';
-import { HomePageComponent } from './home-page/home-page.component';
+import { AppRoutingModule } from './app-routing.module'
+import { AppComponent } from './app.component'
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { SharedModule } from './shared/shared.module'
+import { HomePageComponent } from './home-page/home-page.component'
 
-import { AngularFireModule } from '@angular/fire/compat'
-import { AngularFirestoreModule} from '@angular/fire/compat/firestore'
-import { environment } from '../environments/environment';
-import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { environment } from '../environments/environment'
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app'
+import { getFirestore, provideFirestore } from '@angular/fire/firestore'
+import { getAuth, provideAuth } from '@angular/fire/auth'
 
 @NgModule({
   declarations: [
@@ -22,9 +22,9 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
     AppRoutingModule,
     BrowserAnimationsModule,
     SharedModule,
-    AngularFireModule.initializeApp(environment.firebase),
-    AngularFirestoreModule,
-    AngularFireAuthModule
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideFirestore(() => getFirestore()),
+    provideAuth(() => getAuth())
   ],
   providers: [],
   bootstrap: [AppComponent]

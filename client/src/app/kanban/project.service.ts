@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { Project } from './kanban.model';
-import firebase from 'firebase/compat/app'
+import { Injectable } from '@angular/core'
+import { Auth } from '@angular/fire/auth'
+import { Firestore, collection, addDoc, arrayUnion, updateDoc, doc, arrayRemove, deleteDoc } from '@angular/fire/firestore'
+import { Project } from './kanban.model'
+import { } from 'firebase/app'
 import { switchMap, map } from 'rxjs';
 
 @Injectable({
@@ -10,16 +10,16 @@ import { switchMap, map } from 'rxjs';
 })
 export class ProjectService {
 
-  constructor(private afAuth: AngularFireAuth, private db: AngularFirestore) { }
+  constructor(private afAuth: Auth, private db: Firestore) { }
 
   /**
    * Create a new project
    */
   async createProject (data: Project) {
-    const user = await this.afAuth.currentUser
-    const project = await this.db.collection('projects').add({...data})
-    await this.db.collection('users').doc(`${user?.uid}`).update({
-      projects: firebase.firestore.FieldValue.arrayUnion(project.id)
+    const user = this.afAuth.currentUser
+    const project = await addDoc(collection(this.db, 'projects'),{...data})
+    await updateDoc(doc(collection(this.db, 'users'),`${user?.uid}`),{
+      projects: arrayUnion(project.id)
     })
     return project
   }
@@ -28,10 +28,10 @@ export class ProjectService {
    * Delete a project
    */
   async deleteProject (projectId: string) {
-    const user = await this.afAuth.currentUser
-    await this.db.collection('users').doc(`${user?.uid}`).update({
-      projects: firebase.firestore.FieldValue.arrayRemove(projectId)
+    const user = this.afAuth.currentUser
+    await updateDoc(doc(collection(this.db,'users'),`${user?.uid}`),{
+      projects: arrayRemove(projectId)
     })
-    return this.db.collection('projects').doc(`${projectId}`).delete()
+    return deleteDoc(doc(collection(this.db,'projects'),`${projectId}`))
   }
 }
